@@ -1,0 +1,88 @@
+# Домашнее задание: «Кеширование Redis/Memcached»
+**Ларин Владимир**
+
+---
+
+## Задание 1. Кеширование
+
+**Кейс:**  
+Необходимо ускорить отклик системы, уменьшить нагрузку на базу данных и решить проблемы задержек при повторных запросах.
+
+**Ответ:**  
+Кеширование решает следующие проблемы:
+
+- Перегрузка основной БД при большом количестве повторяющихся запросов.
+- Медленные вычисления или операции агрегации.
+- Высокие задержки при частом получении одинаковых данных.
+- Повышенная нагрузка на сторонние API.
+- Необходимость ускорить работу микросервисов.
+- Снижение времени генерации динамических страниц.
+- Снижение сетевой нагрузки между сервисами.
+
+---
+
+## Задание 2. Memcached
+
+### Установка и запуск Memcached
+
+Команда установки на Debian 10:
+
+```bash
+sudo apt install memcached libmemcached-tools -y
+sudo systemctl enable memcached
+sudo systemctl start memcached
+systemctl status memcached
+
+![Статус memcached](https://github.com/irbis36/FOPS-35-gitlab-hw/blob/main/screenshots/task2-memcached-status.png)
+
+
+## Задание 3. Удаление по TTL в Memcached
+
+### Запишите в memcached несколько ключей с любыми именами и значениями, для которых выставлен TTL 5.
+
+### Приведите скриншот, на котором видно, что спустя 5 секунд ключи удалились из базы.
+
+***Запись ключей через telnet:***
+get key1
+VALUE key1 5 6
+value1
+
+***Проверка что ключи удалены после 5 секунд***
+get key1
+END
+
+![Удаление по TTL](https://github.com/irbis36/FOPS-35-gitlab-hw/blob/main/screenshots/task3-ttl-after.png)
+
+## Задание 4. Запись данных в Redis
+
+### Запишите в Redis несколько ключей с любыми именами и значениями.
+
+### Через redis-cli достаньте все записанные ключи и значения из базы, приведите скриншот этой операции.
+
+Команды redis:
+
+```bash
+redis-cli set key1 value1
+redis-cli set key2 value2
+redis-cli set key3 value3
+redis-cli keys *
+redis-cli mget key1 key2 key3
+
+![redis-key](https://github.com/irbis36/FOPS-35-gitlab-hw/blob/main/screenshots/task4-redis-keys.png)
+
+
+
+## Задание 5*. Работа с числами
+
+### Запишите в Redis ключ key5 со значением типа "int" равным числу 5. Увеличьте его на 5, чтобы в итоге в значении лежало число 10.
+
+### Приведите скриншот, где будут проделаны все операции и будет видно, что значение key5 стало равно 10.
+
+Команды redis:
+
+```bash
+redis-cli set key5 5
+redis-cli incrby key5 5
+redis-cli get key5
+
+![redis-incrby](https://github.com/irbis36/FOPS-35-gitlab-hw/blob/main/screenshots/task5-incrby.png)
