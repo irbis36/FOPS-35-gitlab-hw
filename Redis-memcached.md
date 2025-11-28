@@ -56,7 +56,6 @@ get key1
 END
 
 ![Удаление по TTL](https://raw.githubusercontent.com/irbis36/FOPS-35-gitlab-hw/main/screenshots/task3-ttl-after.png)
-
 ---
 
 ## Задание 4. Запись данных в Redis
@@ -78,7 +77,6 @@ redis-cli mget key1 key2 key3
 ![Redis keys](https://raw.githubusercontent.com/irbis36/FOPS-35-gitlab-hw/main/screenshots/task4-redis-keys.png)
 
 ---
-
 ## Задание 5*. Работа с числами
 
 ### Запишите в Redis ключ key5 со значением типа "int" равным числу 5. Увеличьте его на 5, чтобы в итоге в значении лежало число 10.
@@ -96,3 +94,4 @@ redis-cli get key5
 
 ![Redis incrby](https://raw.githubusercontent.com/irbis36/FOPS-35-gitlab-hw/main/screenshots/task5-incrby.png)
 ---
+
