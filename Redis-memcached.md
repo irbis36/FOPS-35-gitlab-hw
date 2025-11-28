@@ -34,7 +34,7 @@ sudo apt install memcached libmemcached-tools -y
 sudo systemctl enable memcached
 sudo systemctl start memcached
 systemctl status memcached
-
+```
 ![Статус memcached](https://raw.githubusercontent.com/irbis36/FOPS-35-gitlab-hw/main/screenshots/task2-memcached-status.png)
 
 ---
@@ -46,16 +46,24 @@ systemctl status memcached
 ### Приведите скриншот, на котором видно, что спустя 5 секунд ключи удалились из базы.
 
 **Ответ**
-Запись ключей через telnet:
-get key1
-VALUE key1 5 6
+***Запись ключей через telnet:***
+```bash
+telnet localhost 11211
+Trying ::1...
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+set key1 0 5 6
 value1
+STORED
 
 ***Проверка что ключи удалены после 5 секунд***
 get key1
 END
-
+quit
+```
 ![Удаление по TTL](https://raw.githubusercontent.com/irbis36/FOPS-35-gitlab-hw/main/screenshots/task3-ttl-after.png)
+
 ---
 
 ## Задание 4. Запись данных в Redis
@@ -73,7 +81,7 @@ redis-cli set key2 value2
 redis-cli set key3 value3
 redis-cli keys *
 redis-cli mget key1 key2 key3
-
+```
 ![Redis keys](https://raw.githubusercontent.com/irbis36/FOPS-35-gitlab-hw/main/screenshots/task4-redis-keys.png)
 
 ---
@@ -90,8 +98,9 @@ redis-cli mget key1 key2 key3
 redis-cli set key5 5
 redis-cli incrby key5 5
 redis-cli get key5
-
+```
 
 ![Redis incrby](https://raw.githubusercontent.com/irbis36/FOPS-35-gitlab-hw/main/screenshots/task5-incrby.png)
 ---
+
 
