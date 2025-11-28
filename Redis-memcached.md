@@ -20,7 +20,8 @@
 - Снижение сетевой нагрузки между сервисами.
 
 ---
----
+
+
 ## Задание 2. Memcached
 
 ### Установка и запуск Memcached
@@ -37,7 +38,7 @@ systemctl status memcached
 ![Статус memcached](https://raw.githubusercontent.com/irbis36/FOPS-35-gitlab-hw/main/screenshots/task2-memcached-status.png)
 
 ---
----
+
 ## Задание 3. Удаление по TTL в Memcached
 
 ### Запишите в memcached несколько ключей с любыми именами и значениями, для которых выставлен TTL 5.
@@ -57,13 +58,14 @@ END
 ![Удаление по TTL](https://raw.githubusercontent.com/irbis36/FOPS-35-gitlab-hw/main/screenshots/task3-ttl-after.png)
 
 ---
----
+
 ## Задание 4. Запись данных в Redis
 
 ### Запишите в Redis несколько ключей с любыми именами и значениями.
 
 ### Через redis-cli достаньте все записанные ключи и значения из базы, приведите скриншот этой операции.
 
+**Ответ**
 Команды redis:
 
 ```bash
@@ -76,7 +78,7 @@ redis-cli mget key1 key2 key3
 ![Redis keys](https://raw.githubusercontent.com/irbis36/FOPS-35-gitlab-hw/main/screenshots/task4-redis-keys.png)
 
 ---
----
+
 ## Задание 5*. Работа с числами
 
 ### Запишите в Redis ключ key5 со значением типа "int" равным числу 5. Увеличьте его на 5, чтобы в итоге в значении лежало число 10.
