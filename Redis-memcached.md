@@ -33,7 +33,7 @@ sudo systemctl enable memcached
 sudo systemctl start memcached
 systemctl status memcached
 
-![Статус memcached](https://github.com/irbis36/FOPS-35-gitlab-hw/blob/main/screenshots/task2-memcached-status.png)
+![Статус memcached](https://raw.githubusercontent.com/irbis36/FOPS-35-gitlab-hw/main/screenshots/task2-memcached-status.png)
 
 
 ## Задание 3. Удаление по TTL в Memcached
@@ -51,7 +51,7 @@ value1
 get key1
 END
 
-![Удаление по TTL](https://github.com/irbis36/FOPS-35-gitlab-hw/blob/main/screenshots/task3-ttl-after.png)
+![Удаление по TTL](https://raw.githubusercontent.com/irbis36/FOPS-35-gitlab-hw/main/screenshots/task3-ttl-after.png)
 
 ## Задание 4. Запись данных в Redis
 
@@ -68,7 +68,7 @@ redis-cli set key3 value3
 redis-cli keys *
 redis-cli mget key1 key2 key3
 
-![redis-key](https://github.com/irbis36/FOPS-35-gitlab-hw/blob/main/screenshots/task4-redis-keys.png)
+![Redis keys](https://raw.githubusercontent.com/irbis36/FOPS-35-gitlab-hw/main/screenshots/task4-redis-keys.png)
 
 
 
@@ -85,4 +85,4 @@ redis-cli set key5 5
 redis-cli incrby key5 5
 redis-cli get key5
 
-![redis-incrby](https://github.com/irbis36/FOPS-35-gitlab-hw/blob/main/screenshots/task5-incrby.png)
+![Redis incrby](https://raw.githubusercontent.com/irbis36/FOPS-35-gitlab-hw/main/screenshots/task5-incrby.png)
