@@ -25,6 +25,7 @@
 
 ### Установка и запуск Memcached
 
+**Ответ:**
 Команда установки на Debian 10:
 
 ```bash
@@ -35,6 +36,7 @@ systemctl status memcached
 
 ![Статус memcached](https://raw.githubusercontent.com/irbis36/FOPS-35-gitlab-hw/main/screenshots/task2-memcached-status.png)
 
+---
 
 ## Задание 3. Удаление по TTL в Memcached
 
@@ -42,7 +44,8 @@ systemctl status memcached
 
 ### Приведите скриншот, на котором видно, что спустя 5 секунд ключи удалились из базы.
 
-***Запись ключей через telnet:***
+**Ответ**
+Запись ключей через telnet:
 get key1
 VALUE key1 5 6
 value1
@@ -52,6 +55,8 @@ get key1
 END
 
 ![Удаление по TTL](https://raw.githubusercontent.com/irbis36/FOPS-35-gitlab-hw/main/screenshots/task3-ttl-after.png)
+
+---
 
 ## Задание 4. Запись данных в Redis
 
@@ -70,7 +75,7 @@ redis-cli mget key1 key2 key3
 
 ![Redis keys](https://raw.githubusercontent.com/irbis36/FOPS-35-gitlab-hw/main/screenshots/task4-redis-keys.png)
 
-
+---
 
 ## Задание 5*. Работа с числами
 
@@ -78,11 +83,13 @@ redis-cli mget key1 key2 key3
 
 ### Приведите скриншот, где будут проделаны все операции и будет видно, что значение key5 стало равно 10.
 
+**Ответ**
 Команды redis:
 
 ```bash
 redis-cli set key5 5
 redis-cli incrby key5 5
 redis-cli get key5
+
 
 ![Redis incrby](https://raw.githubusercontent.com/irbis36/FOPS-35-gitlab-hw/main/screenshots/task5-incrby.png)
