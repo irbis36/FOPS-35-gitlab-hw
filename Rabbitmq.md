@@ -148,10 +148,7 @@ Flag: virtual_host_metadata, state: enabled
 ### Проверка очереди командой rabbitmqadmin get queue='hello'
 
 **Скрин с rmq01:**  
-![rmq](https://raw.githubusercontent.com/irbis36/FOPS-35-gitlab-hw/main/screenshots/rabbitmq/6.png)
-
-**Скрин с rmq02:**  
-`[сюда нужен скрин]`
+![rmq](https://raw.githubusercontent.com/irbis36/FOPS-35-gitlab-hw/main/screenshots/rabbitmq/7.png)
 
 ---
 
