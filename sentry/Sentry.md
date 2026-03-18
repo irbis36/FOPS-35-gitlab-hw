@@ -29,12 +29,12 @@ Free Cloud account имеет ограничения:
 1. В качестве решения задание предоставьте скриншот `Stack trace` из этого события и список событий проекта после нажатия `Resolved`.
 
 так как создать события из web не получилось привязал свою учебную VM
-![содержимое main.py](/screenshot/Screenshot_8.png)
+![содержимое main.py](screenshot/Screenshot_8.png)
 
-![запуск main.py](sentry/screenshot/Screenshot_2.png)
-![ошибка в sentra](sentry/screenshot/Screenshot_3.png)
-![resolve в sentra](sentry/screenshot/Screenshot_6.png)
-![resolve в sentra](sentry/screenshot/Screenshot_7.png)
+![запуск main.py](screenshot/Screenshot_2.png)
+![ошибка в sentra](screenshot/Screenshot_3.png)
+![resolve в sentra](screenshot/Screenshot_6.png)
+![resolve в sentra](screenshot/Screenshot_7.png)
 
 ## Задание 3
 
@@ -48,8 +48,8 @@ Free Cloud account имеет ограничения:
 5. В качестве решения задания пришлите скриншот тела сообщения из оповещения на почте.
 6. Дополнительно поэкспериментируйте с правилами алёртинга. Выбирайте разные условия отправки и создавайте sample events. 
 
-![error в sentra](sentry/screenshot/Screenshot_4.png)
-![email alert в sentra](sentry/screenshot/Screenshot_5.png)
+![error в sentra](screenshot/Screenshot_4.png)
+![email alert в sentra](screenshot/Screenshot_5.png)
 
 
 ---
