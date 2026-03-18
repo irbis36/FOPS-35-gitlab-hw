@@ -142,10 +142,29 @@
 
 **Скриншот с метриками утилизации CPU:**
 
-![Chronograf CPU Query](screenshots/chronograf_cpu.png)
+![Chronograf CPU Query](screenshots/Screenshot_6.png)
 *(На скриншоте виден график `usage_system`, панель построения запроса и выбранные измерения: `cpu`, `host`, `usage_system`)*
 
 ---
 
 ### Вопрос 9
 **Изучите список telegraf inputs. Добавьте в конфигурацию telegraf следующий плагин - docker:**
+   ```toml
+[[inputs.docker]]
+  endpoint = "unix:///var/run/docker.sock"
+
+**Дополнительно вам может потребоваться донастройка контейнера telegraf в docker-compose.yml дополнительного volume и режима privileged.**
+**После настройке перезапустите telegraf, обновите веб интерфейс и приведите скриншотом список measurments в веб-интерфейсе базы telegraf.autogen . Там должны появиться метрики, связанные с docker.**
+
+**Ответ:**
+
+В конфигурацию Telegraf добавлен плагин `inputs.docker`. В `docker-compose.yml` добавлен проброс сокета Docker (`/var/run/docker.sock`) и перезапущен контейнер. Telegraf начал собирать метрики Docker daemon'а.
+
+**Скриншот списка измерений (measurements) с метриками Docker:**
+
+![Chronograf Docker Measurements](screenshots/Screenshot_7.png)
+*(На скриншоте в выпадающем списке measurements базы `telegraf.autogen` присутствуют новые метрики, начинающиеся с префикса `docker_`)*
+
+> Среди появившихся метрик: `docker_container_cpu`, `docker_container_mem`, `docker_container_net`, `docker_container_blkio` и другие.
+
+---
