@@ -75,6 +75,11 @@ node_filesystem_avail_bytes{device="/dev/vda2"}
 
 ```
 Через stress загрузил CPU - нотификация приходит в ТГ
+
+stress --cpu $(nproc) - процесс для каждого логического ядра, обеспечивая максимальную нагрузку.
+stress --cpu 4 --timeout 45s - нагрузить 4 ядра на 45 секунд:
+
+
 ```
 ![tg-alert](screenshot/Screenshot_4.png)
 *(На скриншоте отображен скриншот уведомления в телеграм)*
