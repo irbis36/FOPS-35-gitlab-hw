@@ -60,10 +60,10 @@ node_memory_MemAvailable_bytes
 ```
 node_filesystem_avail_bytes{device="/dev/vda2"}
 ```
-Для решения этого задания приведите promql-запросы для выдачи этих метрик, а также скриншот получившейся Dashboard.
+Для решения этого задания приведите promql-запросы для выдачи этих метрик, а также скриншот получившийся Dashboard.
 
 ![dashboard1](screenshot/Screenshot_2.png)
-*(На скриншоте отображен скриншот получившейся Dashboard)*
+*(На скриншоте отображен скриншот получившийся Dashboard)*
 
 ## Задание 3
 
