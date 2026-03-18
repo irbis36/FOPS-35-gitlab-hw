@@ -28,7 +28,7 @@
 1. Решение домашнего задания — скриншот веб-интерфейса grafana со списком подключенных Datasource.
 
 ![grafana web ui](grafana/screenshot/Screenshot_1.png)
-
+*(На скриншоте отображена главная страница grafana)
 
 ## Задание 2
 
@@ -63,6 +63,7 @@ node_filesystem_avail_bytes{device="/dev/vda2"}
 Для решения этого задания приведите promql-запросы для выдачи этих метрик, а также скриншот получившейся Dashboard.
 
 ![dashboard1](grafana/screenshot/Screenshot_2.png)
+*(На скриншоте отображен скриншот получившейся Dashboard)
 
 ## Задание 3
 
@@ -70,11 +71,14 @@ node_filesystem_avail_bytes{device="/dev/vda2"}
 1. В качестве решения задания приведите скриншот вашей итоговой Dashboard.
 
 ![dashboard2](grafana/screenshot/Screenshot_3.png)
+*(На скриншоте отображен скриншот итоговой Dashboard)
 
 ```
 Через stress загрузил CPU - нотификация приходит в ТГ
 ```
 ![tg-alert](grafana/screenshot/Screenshot_1.png)
+*(На скриншоте отображен скриншот уведомления в телеграм)
+
 
 ## Задание 4
 
