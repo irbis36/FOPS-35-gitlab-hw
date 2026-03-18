@@ -62,7 +62,7 @@ node_filesystem_avail_bytes{device="/dev/vda2"}
 ```
 Для решения этого задания приведите promql-запросы для выдачи этих метрик, а также скриншот получившейся Dashboard.
 
-![dashboard1](grafana/screenshot/Screenshot_2.png)
+![dashboard1](screenshot/Screenshot_2.png)
 *(На скриншоте отображен скриншот получившейся Dashboard)*
 
 ## Задание 3
