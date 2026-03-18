@@ -123,7 +123,7 @@
 
 **Скриншот веб-интерфейса Chronograf:**
 
-![Chronograf Dashboard](screenshots/chronograf_main.png)
+![Chronograf Dashboard](screenshots/Screenshot_5.png)
 *(На скриншоте отображена главная страница Chronograf, доступная по адресу localhost:8888)*
 
 > *Примечание:* Если контейнеры падали с ошибкой прав доступа, в docker-compose.yml для volumes была добавлена опция `:Z` (например, `./data:/var/lib:Z`).
