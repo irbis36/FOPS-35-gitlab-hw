@@ -76,7 +76,7 @@ node_filesystem_avail_bytes{device="/dev/vda2"}
 ```
 Через stress загрузил CPU - нотификация приходит в ТГ
 ```
-![tg-alert](screenshot/Screenshot_1.png)
+![tg-alert](screenshot/Screenshot_4.png)
 *(На скриншоте отображен скриншот уведомления в телеграм)*
 
 
@@ -86,7 +86,7 @@ node_filesystem_avail_bytes{device="/dev/vda2"}
 1. В качестве решения задания приведите листинг этого файла.
 
 ![dashboard.json](dashboard.json)
-
+*(json-содержимое )*
 ---
 
 ### Как оформить решение задания
