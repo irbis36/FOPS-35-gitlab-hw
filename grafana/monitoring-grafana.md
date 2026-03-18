@@ -27,7 +27,7 @@
 1. Подключите поднятый вами prometheus, как источник данных.
 1. Решение домашнего задания — скриншот веб-интерфейса grafana со списком подключенных Datasource.
 
-![grafana web ui](grafana/screenshot/Screenshot_1.png)
+![grafana web ui](screenshot/Screenshot_1.png)
 *(На скриншоте отображена главная страница grafana)*
 
 ## Задание 2
@@ -70,13 +70,13 @@ node_filesystem_avail_bytes{device="/dev/vda2"}
 1. Создайте для каждой Dashboard подходящее правило alert — можно обратиться к первой лекции в блоке «Мониторинг».
 1. В качестве решения задания приведите скриншот вашей итоговой Dashboard.
 
-![dashboard2](grafana/screenshot/Screenshot_3.png)
+![dashboard2](screenshot/Screenshot_3.png)
 *(На скриншоте отображен скриншот итоговой Dashboard)*
 
 ```
 Через stress загрузил CPU - нотификация приходит в ТГ
 ```
-![tg-alert](grafana/screenshot/Screenshot_1.png)
+![tg-alert](screenshot/Screenshot_1.png)
 *(На скриншоте отображен скриншот уведомления в телеграм)*
 
 
@@ -85,7 +85,7 @@ node_filesystem_avail_bytes{device="/dev/vda2"}
 1. Сохраните ваш Dashboard.Для этого перейдите в настройки Dashboard, выберите в боковом меню «JSON MODEL». Далее скопируйте отображаемое json-содержимое в отдельный файл и сохраните его.
 1. В качестве решения задания приведите листинг этого файла.
 
-![dashboard.json](grafana/dashboard.json)
+![dashboard.json](dashboard.json)
 
 ---
 
