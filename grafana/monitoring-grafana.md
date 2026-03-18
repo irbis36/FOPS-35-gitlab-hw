@@ -28,7 +28,7 @@
 1. Решение домашнего задания — скриншот веб-интерфейса grafana со списком подключенных Datasource.
 
 ![grafana web ui](grafana/screenshot/Screenshot_1.png)
-*(На скриншоте отображена главная страница grafana)
+*(На скриншоте отображена главная страница grafana)*
 
 ## Задание 2
 
@@ -63,7 +63,7 @@ node_filesystem_avail_bytes{device="/dev/vda2"}
 Для решения этого задания приведите promql-запросы для выдачи этих метрик, а также скриншот получившейся Dashboard.
 
 ![dashboard1](grafana/screenshot/Screenshot_2.png)
-*(На скриншоте отображен скриншот получившейся Dashboard)
+*(На скриншоте отображен скриншот получившейся Dashboard)*
 
 ## Задание 3
 
@@ -71,13 +71,13 @@ node_filesystem_avail_bytes{device="/dev/vda2"}
 1. В качестве решения задания приведите скриншот вашей итоговой Dashboard.
 
 ![dashboard2](grafana/screenshot/Screenshot_3.png)
-*(На скриншоте отображен скриншот итоговой Dashboard)
+*(На скриншоте отображен скриншот итоговой Dashboard)*
 
 ```
 Через stress загрузил CPU - нотификация приходит в ТГ
 ```
 ![tg-alert](grafana/screenshot/Screenshot_1.png)
-*(На скриншоте отображен скриншот уведомления в телеграм)
+*(На скриншоте отображен скриншот уведомления в телеграм)*
 
 
 ## Задание 4
@@ -85,7 +85,7 @@ node_filesystem_avail_bytes{device="/dev/vda2"}
 1. Сохраните ваш Dashboard.Для этого перейдите в настройки Dashboard, выберите в боковом меню «JSON MODEL». Далее скопируйте отображаемое json-содержимое в отдельный файл и сохраните его.
 1. В качестве решения задания приведите листинг этого файла.
 
-[dashboard.json](grafana/dashboard.json)
+![dashboard.json](grafana/dashboard.json)
 
 ---
 
