@@ -46,10 +46,11 @@ import sentry_sdk
 sentry_sdk.init(
     dsn="YOUR_DSN"
 )
-
+```
 # Генерация тестовой ошибки
+```
 division_by_zero = 1 / 0
-
+```
 ![содержимое main.py](screenshot/Screenshot_8.png)
 
 ![запуск main.py](screenshot/Screenshot_2.png)
