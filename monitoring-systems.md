@@ -178,7 +178,9 @@
 
 **Скриншот списка измерений (measurements) с метриками Docker:**
 
-![Chronograf Docker Measurements](screenshots/Screenshot_7.png)
+![Chronograf Docker Utilization](screenshots/Screenshot_7.png)
+
+![Chronograf Docker Measurements](screenshots/Screenshot_8.png)
 *(На скриншоте в выпадающем списке measurements базы `telegraf.autogen` присутствуют новые метрики, начинающиеся с префикса `docker_`)*
 
 > Среди появившихся метрик: `docker_container_cpu`, `docker_container_mem`, `docker_container_net`, `docker_container_blkio` и другие.
