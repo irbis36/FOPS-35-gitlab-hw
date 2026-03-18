@@ -152,6 +152,7 @@
    ```toml
 [[inputs.docker]]
   endpoint = "unix:///var/run/docker.sock"
+  ```
 
 **Дополнительно вам может потребоваться донастройка контейнера telegraf в docker-compose.yml дополнительного volume и режима privileged.**
 **После настройке перезапустите telegraf, обновите веб интерфейс и приведите скриншотом список measurments в веб-интерфейсе базы telegraf.autogen . Там должны появиться метрики, связанные с docker.**
