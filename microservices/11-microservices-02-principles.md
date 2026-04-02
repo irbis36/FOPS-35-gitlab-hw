@@ -136,3 +136,94 @@ Kafka выигрывает в throughput, но:
 RabbitMQ — оптимальный комприсс.
 
 --- который экономит время DevOps на дебаге. 
+
+
+# Задача 3*: API Gateway (реализация)
+
+## Выбор: **Nginx как API Gateway**
+
+Почему:
+- проще всего реализовать в рамках docker-compose
+- поддерживает auth_request
+- легко воспроизводится локально
+
+---
+## Конфигурация Nginx:
+
+```nginx
+events {}
+
+http {
+    upstream security {
+        server security:8080;
+    }
+
+    upstream uploader {
+        server uploader:8080;
+    }
+
+    upstream minio {
+        server minio:9000;
+    }
+
+    server {
+        listen 80;
+
+        location = /v1/register {
+            proxy_pass http://security/v1/user;
+        }
+
+        location = /v1/token {
+            proxy_pass http://security/v1/token;
+        }
+
+        location = /auth {
+            internal;
+            proxy_pass http://security/v1/token/validation;
+            proxy_pass_request_body off;
+            proxy_set_header Content-Length "";
+            proxy_set_header Authorization $http_authorization;
+        }
+
+        location = /v1/user {
+            auth_request /auth;
+            proxy_pass http://security/v1/user;
+        }
+
+        location = /v1/upload {
+            auth_request /auth;
+            proxy_pass http://uploader/v1/upload;
+        }
+
+        location ~ ^/v1/images/(.*)$ {
+            auth_request /auth;
+            proxy_pass http://minio/images/$1;
+        }
+    }
+}
+
+## Docker Compose
+```YAML
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - security
+      - uploader
+      - minio
+
+  security:
+    image: your-security-image
+
+  uploader:
+    image: your-uploader-image
+
+  minio:
+    image: minio/minio
+    command: server /data
