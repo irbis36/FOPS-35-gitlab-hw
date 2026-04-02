@@ -201,7 +201,7 @@ http {
         }
     }
 }
-
+```
 ## Docker Compose
 ```YAML
 version: '3.8'
@@ -214,16 +214,8 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:
-      - security
-      - uploader
       - minio
-
-  security:
-    image: your-security-image
-
-  uploader:
-    image: your-uploader-image
-
   minio:
     image: minio/minio
     command: server /data
+    ```
