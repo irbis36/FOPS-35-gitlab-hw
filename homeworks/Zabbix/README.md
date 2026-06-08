@@ -146,7 +146,7 @@ root@deb-13-netology:/opt/zabbix# docker inspect -f '{{range.NetworkSettings.Net
 
 ## Веб-интерфейс Zabbix
 
-![Zabbix Admin Panel](/img/adminka.png)
+![Zabbix Admin Panel](homeworks/Zabbix/img/adminka.png)
 
 ---
 
@@ -187,10 +187,10 @@ Press Ctrl+C to exit.
 
 ## Добавление хостов в Zabbix
 
-![Hosts](/img/hosts.png)
+![Hosts](homeworks/Zabbix/img/hosts.png)
 
 ---
 
 ## Итог: два агента подключены
 
-![Two Agents](/img/adminka_2_agents.png)
+![Two Agents](homeworks/Zabbix/img/adminka_2_agents.png)
