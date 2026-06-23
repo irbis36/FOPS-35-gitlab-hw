@@ -11,9 +11,9 @@
 
 ### Результаты сканирования
 
-![Результат сканирования nmap — открытые порты](img/1IS.png)
+![Результат сканирования nmap — открытые порты](screenshots/1IS.png)
 
-![Детали служб и версий](img/2IS.png)
+![Детали служб и версий](screenshots/2IS.png)
 
 В ходе сканирования было обнаружено **23 открытых TCP-порта**.
 
@@ -76,7 +76,7 @@ nmap -sS 192.168.48.130
 tcp.flags.syn == 1
 ```
 
-![SYN-сканирование в Wireshark](img/syn.png)
+![SYN-сканирование в Wireshark](screenshots/syn.png)
 
 ---
 
@@ -95,7 +95,7 @@ nmap -sF 192.168.48.130
 tcp.flags.fin == 1
 ```
 
-![FIN-сканирование в Wireshark](img/fin.png)
+![FIN-сканирование в Wireshark](screenshots/fin.png)
 
 ---
 
@@ -109,7 +109,7 @@ TCP-пакеты отправляются с тремя установленны
 nmap -sX 192.168.48.130
 ```
 
-![Xmas-сканирование в Wireshark](img/xmas.png)
+![Xmas-сканирование в Wireshark](screenshots/xmas.png)
 
 ---
 
@@ -128,7 +128,7 @@ nmap -sU 192.168.48.130
 udp || icmp
 ```
 
-![UDP-сканирование в Wireshark](img/udp.png)
+![UDP-сканирование в Wireshark](screenshots/udp.png)
 
 ---
 
