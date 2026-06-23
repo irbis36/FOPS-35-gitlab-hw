@@ -37,7 +37,7 @@ CREATE USER 'sys_temp'@'localhost' IDENTIFIED BY 'password';
 SELECT user, host FROM mysql.user;
 ```
 
-**Скриншот 1 — список пользователей (`sys_temp` присутствует в списке):**
+**Скриншот 1 — список пользователей :**
 
 ![Скриншот 1 — список пользователей](screenshots/01_users_list.png)
 
