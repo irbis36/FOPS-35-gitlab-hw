@@ -17,7 +17,7 @@ docker run -d \
   -p 3306:3306 \
   mysql:8.0
 
-# Подождать 10-15 секунд, пока MySQL стартует
+# Необходимо подождать 10-15 секунд, пока MySQL стартует, иначе будет ошибка
 docker exec -it mysql-lab mysql -uroot -prootpass
 ```
 
@@ -67,7 +67,7 @@ SHOW GRANTS FOR 'sys_temp'@'localhost';
 ### 1.6. Смена типа аутентификации и переподключение от имени `sys_temp`
 
 ```sql
--- Сменить тип аутентификации (выполнять от root)
+-- Смена типа аутентификации
 ALTER USER 'sys_temp'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
 FLUSH PRIVILEGES;
 
@@ -85,24 +85,24 @@ docker exec -it mysql-lab mysql -usys_temp -ppassword
 ### 1.7. Скачивание и восстановление дампа базы Sakila
 
 ```bash
-# Скачать дамп (на хосте, вне контейнера)
+# Скачивание дампа на докер хост
 curl -L -o /tmp/sakila-db.zip https://downloads.mysql.com/docs/sakila-db.zip
 cd /tmp && unzip sakila-db.zip
 
-# Скопировать файлы в контейнер
+# Перенос файлов в контейнер
 docker cp /tmp/sakila-db/sakila-schema.sql mysql-lab:/tmp/
 docker cp /tmp/sakila-db/sakila-data.sql   mysql-lab:/tmp/
 
-# Восстановить дамп (внутри контейнера от root)
+# Восстановление дампа базы (внутри контейнера от root)
 docker exec -it mysql-lab mysql -uroot -prootpass
 ```
 
 ```sql
--- Создать базу и загрузить схему
+-- Создание базы и загрузка схемы
 SOURCE /tmp/sakila-schema.sql;
 SOURCE /tmp/sakila-data.sql;
 
--- Проверить
+-- Проверка
 USE sakila;
 SHOW TABLES;
 ```
@@ -122,7 +122,7 @@ SHOW TABLES;
 
 ---
 
-### Все запросы — итоговая «простыня»
+### Все запросы — список комманд
 
 ```sql
 -- 1.2 Создание пользователя
@@ -194,3 +194,7 @@ ORDER BY
 **Скриншот 4 — результат запроса по первичным ключам:**
 
 ![Скриншот 4 — первичные ключи таблиц Sakila](screenshots/04_primary_keys.png)
+
+**Скриншот 5 — результат запроса по первичным ключам от пользователя sys_temp:**
+
+![Скриншот 5 — результат запроса пользователя sys_temp](screenshots/05_sys_temp.png)
