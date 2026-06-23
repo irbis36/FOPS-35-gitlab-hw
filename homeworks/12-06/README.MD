@@ -144,13 +144,13 @@ docker exec -it mysql-slave mysql -uroot -prootpass
 
 ```sql
 -- Указали параметры подключения к master
--- Вместо mysql-master можно указать IP контейнера
+-- Вместо mysql-master можно указать IP контейнера, но т.к. у меня всё на одном хосте, можно по имени
 CHANGE MASTER TO
     MASTER_HOST='mysql-master',
     MASTER_USER='replicator',
     MASTER_PASSWORD='replicapass',
     MASTER_LOG_FILE='mysql-bin.000003',   -- значение из SHOW MASTER STATUS
-    MASTER_LOG_POS=157;                   -- значение из SHOW MASTER STATUS
+    MASTER_LOG_POS=839;                   -- значение из SHOW MASTER STATUS
 
 -- Запустили репликацию
 START SLAVE;
@@ -163,7 +163,7 @@ SHOW SLAVE STATUS\G
 Строки `Slave_IO_Running: Yes` и `Slave_SQL_Running: Yes` говорят об успешной репликации:**
 
 ![Скриншот 3 — SHOW SLAVE STATUS](screenshots/03_slave_status.png)
-
+![Скриншот 3 — SHOW SLAVE STATUS](screenshots/03_slave_status_1.png)
 ---
 
 ### Проверили репликацию — создали данные на Master
