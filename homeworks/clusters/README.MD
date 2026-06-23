@@ -107,6 +107,9 @@ defaults
     timeout client  30s
     timeout server  30s
 
+#---------------------------------------------------------------------
+# Statistics page
+#---------------------------------------------------------------------
 listen stats
     bind *:8404
     mode http
@@ -116,15 +119,29 @@ listen stats
     stats show-legends
     stats show-node
 
+#---------------------------------------------------------------------
+# Task 2: L7 фронтенд — принимает весь HTTP-трафик
+# Роутинг: только example.local идёт на бэкенд с серверами,
+# всё остальное получает ответ 403
+#---------------------------------------------------------------------
 frontend http_front
     bind *:80
     mode http
 
+    # ACL: проверяем Host-заголовок (с портом и без)
     acl is_example_local hdr(host) -i example.local
+    acl is_example_local hdr(host) -i example.local:8090
 
+    # Если домен совпал — отправляем на weighted-бэкенд
     use_backend weighted_servers if is_example_local
+
+    # Всё остальное — отказ
     default_backend deny_backend
 
+#---------------------------------------------------------------------
+# Бэкенд: Weighted Round Robin
+# server1 weight 2, server2 weight 3, server3 weight 4
+#---------------------------------------------------------------------
 backend weighted_servers
     mode http
     balance roundrobin
@@ -132,6 +149,9 @@ backend weighted_servers
     server server2 server2:8081 weight 3 check
     server server3 server3:8082 weight 4 check
 
+#---------------------------------------------------------------------
+# Бэкенд-заглушка для трафика не на example.local
+#---------------------------------------------------------------------
 backend deny_backend
     mode http
     http-request deny deny_status 403
