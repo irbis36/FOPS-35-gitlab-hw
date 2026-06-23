@@ -1,5 +1,10 @@
 # Домашнее задание к занятию 2 «Кластеризация и балансировка нагрузки»
 
+**Автор: Ларин Владимир**
+
+> Для удобства выполнения вся система развёрнута в Docker-контейнерах.  
+> Проверка выполняется с виртуальной машины по адресу `172.18.187.118`.
+
 ---
 
 ## Задание 1. HAProxy — балансировка Round-robin на 4 уровне
@@ -57,7 +62,7 @@ backend tcp_servers
 Команда для проверки — запросы поочерёдно уходят на Server-1 и Server-2:
 
 ```bash
-for i in {1..6}; do curl -s http://localhost:8080 | grep "<h1>"; done
+for i in {1..6}; do curl -s http://172.18.187.118:8080 | grep "<h1>"; done
 ```
 
 **Скриншот 1 — вывод команды curl в терминале (видно чередование Server-1 / Server-2):**
@@ -66,7 +71,7 @@ for i in {1..6}; do curl -s http://localhost:8080 | grep "<h1>"; done
 
 ---
 
-**Скриншот 2 — страница статистики HAProxy (`http://localhost:8404/stats`), видны оба сервера в состоянии UP:**
+**Скриншот 2 — страница статистики HAProxy (`http://172.18.187.118:8404/stats`), видны оба сервера в состоянии UP:**
 
 ![Скриншот 2 — статистика HAProxy задание 1](screenshots/task1_haproxy_stats.png)
 
@@ -88,7 +93,7 @@ cd task2
 docker compose up -d
 
 # Добавить домен в /etc/hosts (один раз):
-echo "127.0.0.1 example.local" | sudo tee -a /etc/hosts
+echo "172.18.187.118 example.local" | sudo tee -a /etc/hosts
 ```
 
 ### Конфигурационный файл `haproxy.cfg`
@@ -107,9 +112,6 @@ defaults
     timeout client  30s
     timeout server  30s
 
-#---------------------------------------------------------------------
-# Statistics page
-#---------------------------------------------------------------------
 listen stats
     bind *:8404
     mode http
@@ -119,29 +121,15 @@ listen stats
     stats show-legends
     stats show-node
 
-#---------------------------------------------------------------------
-# Task 2: L7 фронтенд — принимает весь HTTP-трафик
-# Роутинг: только example.local идёт на бэкенд с серверами,
-# всё остальное получает ответ 403
-#---------------------------------------------------------------------
 frontend http_front
     bind *:80
     mode http
 
-    # ACL: проверяем Host-заголовок (с портом и без)
     acl is_example_local hdr(host) -i example.local
-    acl is_example_local hdr(host) -i example.local:8090
 
-    # Если домен совпал — отправляем на weighted-бэкенд
     use_backend weighted_servers if is_example_local
-
-    # Всё остальное — отказ
     default_backend deny_backend
 
-#---------------------------------------------------------------------
-# Бэкенд: Weighted Round Robin
-# server1 weight 2, server2 weight 3, server3 weight 4
-#---------------------------------------------------------------------
 backend weighted_servers
     mode http
     balance roundrobin
@@ -149,9 +137,6 @@ backend weighted_servers
     server server2 server2:8081 weight 3 check
     server server3 server3:8082 weight 4 check
 
-#---------------------------------------------------------------------
-# Бэкенд-заглушка для трафика не на example.local
-#---------------------------------------------------------------------
 backend deny_backend
     mode http
     http-request deny deny_status 403
@@ -174,17 +159,17 @@ for i in {1..9}; do curl -s http://example.local:8090 | grep "<h1>"; done
 ### Проверка запроса БЕЗ домена `example.local`
 
 ```bash
-curl -v http://localhost:8090
+curl -v http://172.18.187.118:8090
 ```
 
 HAProxy должен вернуть **403 Forbidden**, так как Host-заголовок не совпадает с `example.local`.
 
-**Скриншот 4 — ответ 403 Forbidden при обращении без домена (напрямую по IP/localhost):**
+**Скриншот 4 — ответ 403 Forbidden при обращении без домена (напрямую по IP `172.18.187.118`):**
 
 ![Скриншот 4 — 403 Forbidden без домена](screenshots/task2_curl_without_domain.png)
 
 ---
 
-**Скриншот 5 — страница статистики HAProxy (`http://localhost:8405/stats`), видны три сервера с весами 2, 3, 4:**
+**Скриншот 5 — страница статистики HAProxy (`http://172.18.187.118:8405/stats`), видны три сервера с весами 2, 3, 4:**
 
 ![Скриншот 5 — статистика HAProxy задание 2](screenshots/task2_haproxy_stats.png)
