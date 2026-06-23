@@ -98,7 +98,7 @@ openssl enc -aes-256-cbc -salt -in /home/cryptouser/secret.txt \
 Был установлен пакет `cryptsetup` версии 2.4.3:
 
 **Скриншот 5 — Установка cryptsetup:**
-![Скриншот 5 — Установка cryptsetup](screenshots/Screenshot_5.png)
+![Скриншот 5 — Установка cryptsetup](screenshots/Screenshot_11.png)
 
 ---
 
