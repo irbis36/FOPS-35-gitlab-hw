@@ -113,7 +113,7 @@ dd if=/dev/zero of=/root/luks_volume.img bs=1M count=100
 Образ создан успешно: 104857600 байт, скорость записи 937 МБ/с:
 
 **Скриншот 6 — Создание файла-образа 100 МБ:**
-![Скриншот 6 — Создание файла-образа 100 МБ](screenshots/Screenshot_6.png)
+![Скриншот 6 — Создание файла-образа 100 МБ](screenshots/Screenshot_5.png)
 
 ---
 
@@ -137,7 +137,7 @@ cryptsetup luksFormat --batch-mode --type luks2 \
 Командой `luksDump` были получены подробные сведения о контейнере. Заголовок подтвердил: алгоритм `aes-xts-plain64`, 256-битный ключ, функция выведения ключа `argon2id`:
 
 **Скриншот 7 — Метаданные LUKS-раздела (luksDump):**
-![Скриншот 7 — Метаданные LUKS-раздела](screenshots/Screenshot_7.png)
+![Скриншот 7 — Метаданные LUKS-раздела](screenshots/Screenshot_6.png)
 
 ---
 
@@ -154,7 +154,7 @@ cryptsetup luksOpen /dev/loop0 secured_volume --key-file /root/keyfile
 После открытия `secured_volume` появился в `/dev/mapper/`:
 
 **Скриншот 8 — Открытие тома, создание ФС, монтирование и запись данных:**
-![Скриншот 8 — Открытие тома и монтирование](screenshots/Screenshot_8.png)
+![Скриншот 8 — Открытие тома и монтирование](screenshots/Screenshot_7.png)
 
 ---
 
@@ -169,7 +169,7 @@ cryptsetup luksOpen /dev/loop0 secured_volume --key-file /root/keyfile
 После работы том был корректно отмонтирован и закрыт. `secured_volume` исчез из `/dev/mapper/` — данные стали полностью недоступны без ключевого файла:
 
 **Скриншот 9 — Закрытие тома, secured_volume исчез из /dev/mapper/:**
-![Скриншот 9 — Закрытие тома](screenshots/Screenshot_9.png)
+![Скриншот 9 — Закрытие тома](screenshots/Screenshot_8.png)
 
 ---
 
