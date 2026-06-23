@@ -98,7 +98,7 @@ openssl enc -aes-256-cbc -salt -in /home/cryptouser/secret.txt \
 Был установлен пакет `cryptsetup` версии 2.4.3:
 
 **Скриншот 5 — Установка cryptsetup:**
-![Скриншот 5 — Установка cryptsetup](screenshots/Screenshot_4.png)
+![Скриншот 5 — Установка cryptsetup](screenshots/Screenshot_5.png)
 
 ---
 
@@ -113,7 +113,7 @@ dd if=/dev/zero of=/root/luks_volume.img bs=1M count=100
 Образ создан успешно: 104857600 байт, скорость записи 937 МБ/с:
 
 **Скриншот 6 — Создание файла-образа 100 МБ:**
-![Скриншот 6 — Создание файла-образа 100 МБ](screenshots/Screenshot_5.png)
+![Скриншот 6 — Создание файла-образа 100 МБ](screenshots/Screenshot_6.png)
 
 ---
 
@@ -137,7 +137,7 @@ cryptsetup luksFormat --batch-mode --type luks2 \
 Командой `luksDump` были получены подробные сведения о контейнере. Заголовок подтвердил: алгоритм `aes-xts-plain64`, 256-битный ключ, функция выведения ключа `argon2id`:
 
 **Скриншот 7 — Метаданные LUKS-раздела (luksDump):**
-![Скриншот 7 — Метаданные LUKS-раздела](screenshots/Screenshot_6.png)
+![Скриншот 7 — Метаданные LUKS-раздела](screenshots/Screenshot_7.png)
 
 ---
 
