@@ -22,40 +22,7 @@ docker compose up -d
 ```
 
 ### Конфигурационный файл `haproxy.cfg`
-
-```haproxy
-global
-    log stdout format raw local0
-    maxconn 4096
-
-defaults
-    log     global
-    mode    tcp
-    option  tcplog
-    timeout connect 5s
-    timeout client  30s
-    timeout server  30s
-
-listen stats
-    bind *:8404
-    mode http
-    stats enable
-    stats uri /stats
-    stats refresh 5s
-    stats show-legends
-    stats show-node
-
-frontend tcp_front
-    bind *:80
-    mode tcp
-    default_backend tcp_servers
-
-backend tcp_servers
-    mode tcp
-    balance roundrobin
-    server server1 server1:8080 check
-    server server2 server2:8081 check
-```
+[task1-haproxy.cfg](haproxy-configs/task1-haproxy.cfg)
 
 ### Проверка балансировки
 
@@ -98,49 +65,7 @@ echo "172.18.187.118 example.local" | sudo tee -a /etc/hosts
 
 ### Конфигурационный файл `haproxy.cfg`
 
-```haproxy
-global
-    log stdout format raw local0
-    maxconn 4096
-
-defaults
-    log     global
-    mode    http
-    option  httplog
-    option  dontlognull
-    timeout connect 5s
-    timeout client  30s
-    timeout server  30s
-
-listen stats
-    bind *:8404
-    mode http
-    stats enable
-    stats uri /stats
-    stats refresh 5s
-    stats show-legends
-    stats show-node
-
-frontend http_front
-    bind *:80
-    mode http
-
-    acl is_example_local hdr(host) -i example.local
-
-    use_backend weighted_servers if is_example_local
-    default_backend deny_backend
-
-backend weighted_servers
-    mode http
-    balance roundrobin
-    server server1 server1:8080 weight 2 check
-    server server2 server2:8081 weight 3 check
-    server server3 server3:8082 weight 4 check
-
-backend deny_backend
-    mode http
-    http-request deny deny_status 403
-```
+[task2-haproxy.cfg](haproxy-configs/task2-haproxy.cfg)
 
 ### Проверка балансировки С доменом `example.local`
 
