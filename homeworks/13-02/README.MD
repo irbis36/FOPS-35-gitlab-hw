@@ -113,7 +113,7 @@ dd if=/dev/zero of=/root/luks_volume.img bs=1M count=100
 Образ создан успешно: 104857600 байт, скорость записи 937 МБ/с:
 
 **Скриншот 6 — Создание файла-образа 100 МБ:**
-![Скриншот 6 — Создание файла-образа 100 МБ](screenshots/Screenshot_5.png)
+![Скриншот 6 — Создание файла-образа 100 МБ](screenshots/Screenshot_4.png)
 
 ---
 
@@ -129,6 +129,7 @@ cryptsetup luksFormat --batch-mode --type luks2 \
 ```
 
 Инициализация завершилась успешно.
+![Скриншот  — Инициализация (screenshots/Screenshot_5.png)
 
 ---
 
