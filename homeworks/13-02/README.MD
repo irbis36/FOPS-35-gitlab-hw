@@ -129,7 +129,7 @@ cryptsetup luksFormat --batch-mode --type luks2 \
 ```
 
 Инициализация завершилась успешно.
-![Скриншот  — Инициализация (screenshots/Screenshot_5.png)
+![Скриншот  — Инициализация](screenshots/Screenshot_5.png)
 
 ---
 
