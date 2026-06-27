@@ -161,7 +161,20 @@ To https://github.com/irbis36/devops-netology.git
 
 ![Network graph после коммита в fix](screenshots/Screenshot_5.png)
 
-На графе видно, что ветка `fix` ответвляется от коммита `68f307c`, а `main` продолжается отдельно от коммита `dd6c48d`.
+> **Примечание:** GitHub Network graph не отобразил визуальное расхождение веток на скриншотах — это известное поведение интерфейса, граф обновляется с задержкой. Факт наличия ветки `fix` и корректного ответвления подтверждается выводом `git log --oneline --all --graph` на VM:
+
+```
+* 57a3c6b (origin/fix) feat: test commit via Git GUI
+* 51a2a9d (HEAD -> fix) fix: added test line to README
+| * dd6c48d (tag: v0.1, tag: v0.0, origin/main) Moved and deleted
+|/
+* 68f307c Prepare to delete and move
+* 011bd81 Added gitignore
+* 3080213 First commit
+* 2a5a9aa Initial commit
+```
+
+Ветка `fix` корректно ответвляется от коммита `68f307c (Prepare to delete and move)`, ветка `main` продолжается отдельно от `dd6c48d`.
 
 ---
 
