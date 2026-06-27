@@ -92,7 +92,7 @@ docker rename "Larin-Vladimir-custom-nginx-t2" "custom-nginx-t2"
 date +"%d-%m-%Y %T.%N %Z" ; sleep 0.150 ; docker ps ; ss -tlpn | grep 127.0.0.1:8080 ; docker logs custom-nginx-t2 -n1 ; docker exec -it custom-nginx-t2 base64 /usr/share/nginx/html/index.html
 ```
 
-![Комплексная проверка контейнера](/screenshots/Screenshot_1.png)
+![Комплексная проверка контейнера](screenshots/Screenshot_1.png)
 
 ### Проверка через curl (скриншот)
 
@@ -100,7 +100,7 @@ date +"%d-%m-%Y %T.%N %Z" ; sleep 0.150 ; docker ps ; ss -tlpn | grep 127.0.0.1:
 curl http://127.0.0.1:8080
 ```
 
-![curl проверка доступности страницы](/screenshots/Screenshot_2.png)
+![curl проверка доступности страницы](screenshots/Screenshot_2.png)
 
 ---
 
@@ -113,7 +113,7 @@ docker attach custom-nginx-t2
 # нажата комбинация Ctrl-C
 ```
 
-![docker attach и остановка контейнера через Ctrl-C](/screenshots/Screenshot_3.png)
+![docker attach и остановка контейнера через Ctrl-C](screenshots/Screenshot_3.png)
 
 ### Проверка статуса контейнера — docker ps -a (скриншот)
 
@@ -121,7 +121,7 @@ docker attach custom-nginx-t2
 docker ps -a
 ```
 
-![docker ps -a — контейнер остановлен](/screenshots/Screenshot_4.png)
+![docker ps -a — контейнер остановлен](screenshots/Screenshot_4.png)
 
 **Объяснение:** Команда `docker attach` подключает терминал напрямую к главному процессу контейнера (PID 1 — nginx). Нажатие Ctrl-C отправило сигнал **SIGINT** (сигнал 2) в этот процесс. Nginx корректно обработал сигнал и завершил работу. Поскольку главный процесс контейнера завершился — остановился и сам контейнер.
 
@@ -132,7 +132,7 @@ docker start custom-nginx-t2
 docker exec -it custom-nginx-t2 bash
 ```
 
-![Перезапуск контейнера и вход в bash](/screenshots/Screenshot_5.png)
+![Перезапуск контейнера и вход в bash](screenshots/Screenshot_5.png)
 
 ### Проверка наличия nano (скриншот)
 
@@ -140,7 +140,7 @@ docker exec -it custom-nginx-t2 bash
 nano --version
 ```
 
-![nano --version](/screenshots/Screenshot_6.png)
+![nano --version](screenshots/Screenshot_6.png)
 
 ### Редактирование конфига nginx — замена порта 80 на 81 (скриншот)
 
@@ -149,7 +149,7 @@ nano /etc/nginx/conf.d/default.conf
 cat /etc/nginx/conf.d/default.conf
 ```
 
-![Конфиг nginx с портом 81](/screenshots/Screenshot_7.png)
+![Конфиг nginx с портом 81](screenshots/Screenshot_7.png)
 
 ### Перезагрузка nginx и проверка curl внутри контейнера (скриншот)
 
@@ -157,7 +157,7 @@ cat /etc/nginx/conf.d/default.conf
 nginx -s reload ; curl http://127.0.0.1:80 ; curl http://127.0.0.1:81
 ```
 
-![nginx reload и curl внутри контейнера](/screenshots/Screenshot_8.png)
+![nginx reload и curl внутри контейнера](screenshots/Screenshot_8.png)
 
 ### Проверка снаружи контейнера после изменения порта (скриншот)
 
@@ -165,7 +165,7 @@ nginx -s reload ; curl http://127.0.0.1:80 ; curl http://127.0.0.1:81
 ss -tlpn | grep 127.0.0.1:8080 ; docker port custom-nginx-t2 ; curl http://127.0.0.1:8080
 ```
 
-![Проблема с портом снаружи контейнера](/screenshots/Screenshot_9.png)
+![Проблема с портом снаружи контейнера](screenshots/Screenshot_9.png)
 
 **Объяснение проблемы:** Docker пробрасывает порт хоста **8080** на порт контейнера **80** (задано при запуске `-p 127.0.0.1:8080:80`). После изменения конфига nginx внутри контейнера стал слушать порт **81** вместо **80**. В результате цепочка разорвана: `хост:8080 → контейнер:80` — но на порту 80 внутри контейнера уже никто не слушает. Маппинг портов задаётся при запуске контейнера и не может быть изменён без его пересоздания.
 
@@ -175,7 +175,7 @@ ss -tlpn | grep 127.0.0.1:8080 ; docker port custom-nginx-t2 ; curl http://127.0
 docker rm -f custom-nginx-t2
 ```
 
-![docker rm -f custom-nginx-t2](/screenshots/Screenshot_10.png)
+![docker rm -f custom-nginx-t2](screenshots/Screenshot_10.png)
 
 ---
 
@@ -187,7 +187,7 @@ docker rm -f custom-nginx-t2
 docker run -d -v $(pwd):/data --name centos-container centos:7 tail -f /dev/null
 ```
 
-![Запуск centos-container](/screenshots/Screenshot_11.png)
+![Запуск centos-container](screenshots/Screenshot_11.png)
 
 ### Запуск контейнера Debian с монтированием тома (скриншот)
 
@@ -195,7 +195,7 @@ docker run -d -v $(pwd):/data --name centos-container centos:7 tail -f /dev/null
 docker run -d -v $(pwd):/data --name debian-container debian:latest tail -f /dev/null
 ```
 
-![Запуск debian-container](/screenshots/Screenshot_12.png)
+![Запуск debian-container](screenshots/Screenshot_12.png)
 
 ### Создание файлов из CentOS-контейнера и с хоста (скриншот)
 
@@ -204,7 +204,7 @@ docker exec -it centos-container bash -c "echo 'Hello from CentOS container' > /
 echo "Hello from host machine" > $(pwd)/host-file.txt && ls -la $(pwd)
 ```
 
-![Создание файлов из centos-container и с хоста](/screenshots/Screenshot_13.png)
+![Создание файлов из centos-container и с хоста](screenshots/Screenshot_13.png)
 
 ### Проверка файлов из Debian-контейнера (скриншот)
 
@@ -212,7 +212,7 @@ echo "Hello from host machine" > $(pwd)/host-file.txt && ls -la $(pwd)
 docker exec -it debian-container bash -c "ls -la /data && echo '---' && cat /data/centos-file.txt && cat /data/host-file.txt"
 ```
 
-![Просмотр файлов из debian-container](/screenshots/Screenshot_14.png)
+![Просмотр файлов из debian-container](screenshots/Screenshot_14.png)
 
 Все файлы, созданные как из контейнера CentOS, так и с хостовой машины, видны из контейнера Debian через общий том.
 
@@ -226,7 +226,7 @@ docker exec -it debian-container bash -c "ls -la /data && echo '---' && cat /dat
 docker compose up -d
 ```
 
-![Первый docker compose up -d — запущен только portainer](/screenshots/Screenshot_15.png)
+![Первый docker compose up -d — запущен только portainer](screenshots/Screenshot_15.png)
 
 **Объяснение:** Был запущен файл `compose.yaml`, а не `docker-compose.yaml`. Согласно документации Docker Compose, при наличии нескольких файлов с поддерживаемыми именами приоритет отдаётся `compose.yaml` как основному имени файла. `docker-compose.yaml` является устаревшим вариантом и имеет более низкий приоритет.
 
@@ -245,7 +245,7 @@ include:
   - docker-compose.yaml
 ```
 
-![Редактирование compose.yaml с добавлением include](/screenshots/Screenshot_16.png)
+![Редактирование compose.yaml с добавлением include](screenshots/Screenshot_16.png)
 
 ### Повторный запуск — оба сервиса запущены (скриншот)
 
@@ -253,7 +253,7 @@ include:
 docker compose up -d
 ```
 
-![docker compose up -d — запущены portainer и registry](/screenshots/Screenshot_17.png)
+![docker compose up -d — запущены portainer и registry](screenshots/Screenshot_17.png)
 
 ### Загрузка образа custom-nginx в локальный registry (скриншот)
 
@@ -262,7 +262,7 @@ docker tag custom-nginx:1.0.0 127.0.0.1:5000/custom-nginx:latest
 docker push 127.0.0.1:5000/custom-nginx:latest
 ```
 
-![Push образа в локальный registry](/screenshots/Screenshot_18.png)
+![Push образа в локальный registry](screenshots/Screenshot_18.png)
 
 ### Portainer — список стеков (скриншот)
 
@@ -278,13 +278,13 @@ services:
       - "9090:80"
 ```
 
-![Portainer — список стеков](/screenshots/Screenshot_19.png)
+![Portainer — список стеков](screenshots/Screenshot_19.png)
 
 ### Portainer — Inspect контейнера nginx (скриншот)
 
 Поля от **AppArmorProfile** до **Driver**:
 
-![Portainer Inspect контейнера nginx](/screenshots/Screenshot_20.png)
+![Portainer Inspect контейнера nginx](screenshots/Screenshot_20.png)
 
 ### Удаление compose.yaml и предупреждение об orphan-контейнерах (скриншот)
 
@@ -292,7 +292,7 @@ services:
 rm compose.yaml && docker compose up -d
 ```
 
-![Удаление compose.yaml и предупреждение об orphan-контейнерах](/screenshots/Screenshot_21.png)
+![Удаление compose.yaml и предупреждение об orphan-контейнерах](screenshots/Screenshot_21.png)
 
 **Объяснение предупреждения:** После удаления `compose.yaml` Docker Compose обнаружил контейнер `task5-portainer-1`, который был создан в рамках этого же проекта (task5), но больше не описан ни в одном из активных compose-файлов. Такие контейнеры называются **"orphan"** (осиротевшие). Docker предлагает удалить их с помощью флага `--remove-orphans`.
 
@@ -302,6 +302,6 @@ rm compose.yaml && docker compose up -d
 docker compose up -d --remove-orphans && docker compose down
 ```
 
-![docker compose up --remove-orphans && docker compose down](/screenshots/Screenshot_22.png)
+![docker compose up --remove-orphans && docker compose down](screenshots/Screenshot_22.png)
 
 Все контейнеры и сети проекта успешно удалены одной командой `docker compose down`.
