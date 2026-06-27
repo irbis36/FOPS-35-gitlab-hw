@@ -6,7 +6,7 @@
 
 ## Окружение
 
-- ОС: Ubuntu (VM2), Git 2.47.3
+- ОС: Debian-13 trixie (VM2), Git 2.47.3
 - Пользователь: Vladimir Larin / lrnvv@mail.ru
 - Репозиторий: https://github.com/irbis36/devops-netology
 
