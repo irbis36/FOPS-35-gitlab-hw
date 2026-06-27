@@ -161,7 +161,7 @@ To https://github.com/irbis36/devops-netology.git
 
 ![Network graph после коммита в fix](screenshots/Screenshot_5.png)
 
-> **Примечание:** GitHub Network graph не отобразил визуальное расхождение веток на скриншотах — это известное поведение интерфейса, граф обновляется с задержкой. Факт наличия ветки `fix` и корректного ответвления подтверждается выводом `git log --oneline --all --graph` на VM:
+> **Примечание:** GitHub Network graph не отобразил визуальное расхождение веток на скриншотах. Факт наличия ветки `fix` и корректного ответвления подтверждается выводом `git log --oneline --all --graph` на VM:
 
 ```
 * 57a3c6b (origin/fix) feat: test commit via Git GUI
