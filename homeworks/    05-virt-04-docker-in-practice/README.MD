@@ -263,7 +263,7 @@ docker exec -ti shvirtd-example-python-db-1 \
   mysql -uroot -pYtReWq4321 virtd -e "SELECT * FROM requests LIMIT 10;"
 ```
 
-![SQL запрос с тремя источниками](screenshots/Screenshot_task4.png)
+![SQL запрос с тремя источниками](screenshots/Screenshot5.png)
 
 В БД зафиксированы запросы с трёх разных источников:
 - 🖥️ **VPS1** — `127.0.0.1` (локальный запрос)
