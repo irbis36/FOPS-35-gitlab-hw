@@ -153,100 +153,8 @@ docker compose up -d --build
 ### Проверка работы
 
 ```bash
-root@vm2:/opt/shvirtd-example-python# curl -L http://127.0.0.1:8090
+curl -L http://127.0.0.1:8090
 "TIME: 2026-06-27 10:27:48, IP: 127.0.0.1"
-```
-```
-# Задача 4 — Доработка развёртывания проекта на удалённом сервере
-
-### Схема проверки
-
-
-Локальная VM (Hyper-V) ──┐
-                          ├──► VPS1 194.113.138.34:8090 ──► MySQL
-VPS2 (5.252.126.91) ─────┘
-```
-
-### 1. Подключение к VPS1 и установка Docker
-
-```bash
-ssh root@194.113.38.34
-curl -fsSL https://get.docker.com -o get-docker.sh && sudo sh get-docker.sh
-```
-
-### 2. Клонирование репозитория и запуск проекта
-
-```bash
-git clone https://github.com/irbis36/shvirtd-example-python.git /opt/shvirtd-example-python
-cd /opt/shvirtd-example-python
-docker compose up -d --build
-```
-
-Все 4 контейнера успешно запущены:
-
-```
-✔ Container shvirtd-example-python-db-1            Started
-✔ Container shvirtd-example-python-reverse-proxy-1 Started
-✔ Container shvirtd-example-python-ingress-proxy-1 Started
-✔ Container shvirtd-example-python-web-1           Started
-```
-
-### 3. Отправка запросов с трёх источников
-
-**С самого VPS1:**
-```bash
-curl http://127.0.0.1:8090
-"TIME: 2026-06-29 13:05:22, IP: 127.0.0.1"
-```
-
-**С VPS2 (5.252.126.91):**
-```bash
-for i in {1..3}; do curl http://194.113.138.34:8090; echo; done
-"TIME: 2026-06-29 13:06:17, IP: 5.252.126.91"
-"TIME: 2026-06-29 13:06:17, IP: 5.252.126.91"
-"TIME: 2026-06-29 13:06:17, IP: 5.252.126.91"
-```
-
-**С локальной VM Hyper-V (78.153.7.62):**
-```bash
-for i in {1..3}; do curl http://194.113.138.34:8090; echo; done
-"TIME: 2026-06-29 13:07:04, IP: 78.153.7.62"
-"TIME: 2026-06-29 13:07:04, IP: 78.153.7.62"
-"TIME: 2026-06-29 13:07:04, IP: 78.153.7.62"
-```
-
-### 4. Проверка записей в БД
-
-```bash
-docker exec -ti shvirtd-example-python-db-1 \
-  mysql -uroot -pYtReWq4321 virtd -e "SELECT * FROM requests LIMIT 10;"
-```
-
-![SQL запрос с тремя источниками](screenshots/Screenshot_task4.png)
-
-```
-+----+---------------------+--------------+
-| id | request_date        | request_ip   |
-+----+---------------------+--------------+
-|  1 | 2026-06-29 13:05:22 | 127.0.0.1    |
-|  2 | 2026-06-29 13:06:17 | 5.252.126.91 |
-|  3 | 2026-06-29 13:06:17 | 5.252.126.91 |
-|  4 | 2026-06-29 13:06:17 | 5.252.126.91 |
-|  5 | 2026-06-29 13:07:04 | 78.153.7.62  |
-|  6 | 2026-06-29 13:07:04 | 78.153.7.62  |
-|  7 | 2026-06-29 13:07:04, | 78.153.7.62  |
-+----+---------------------+--------------+
-```
-
-В БД зафиксированы запросы с трёх разных источников:
-- 🖥️ **VPS1** — `127.0.0.1` (локальный запрос)
-- 🌐 **VPS2** — `5.252.126.91`
-- 💻 **Локальная VM** — `78.153.7.62`
-
-### 5. Очистка VPS1 после выполнения задания
-
-```bash
-cd /opt/shvirtd-example-python && docker compose down -v && cd / && rm -rf /opt/shvirtd-example-python
 ```
 
 ✅ Сервис возвращает время и IP-адрес.
@@ -279,7 +187,7 @@ docker compose down
 
 ---
 
-## Задача 4 — Bash-скрипт развёртывания
+## Задача 4 — Bash-скрипт развёртывания и проверка на удалённом сервере
 
 ### deploy.sh
 
@@ -315,6 +223,58 @@ docker ps -a
 1. Устанавливает Docker если не установлен
 2. Клонирует репозиторий в `/opt/shvirtd-example-python`
 3. Запускает проект через `docker compose up -d --build`
+
+### Проверка с удалённого сервера
+
+Проект развёрнут на VPS1. Запросы отправлялись с трёх разных источников:
+
+```
+Локальная VM (Hyper-V) ──┐
+                          ├──► VPS1:8090 ──► MySQL
+VPS2 ────────────────────┘
+```
+
+**С самого VPS1:**
+```bash
+curl http://127.0.0.1:8090
+"TIME: 2026-06-29 13:05:22, IP: 127.0.0.1"
+```
+
+**С VPS2:**
+```bash
+for i in {1..3}; do curl http://<VPS1_IP>:8090; echo; done
+"TIME: 2026-06-29 13:06:17, IP: <VPS2_IP>"
+"TIME: 2026-06-29 13:06:17, IP: <VPS2_IP>"
+"TIME: 2026-06-29 13:06:17, IP: <VPS2_IP>"
+```
+
+**С локальной VM Hyper-V:**
+```bash
+for i in {1..3}; do curl http://<VPS1_IP>:8090; echo; done
+"TIME: 2026-06-29 13:07:04, IP: <LOCAL_VM_IP>"
+"TIME: 2026-06-29 13:07:04, IP: <LOCAL_VM_IP>"
+"TIME: 2026-06-29 13:07:04, IP: <LOCAL_VM_IP>"
+```
+
+### SQL-запрос — записи из трёх источников
+
+```bash
+docker exec -ti shvirtd-example-python-db-1 \
+  mysql -uroot -pYtReWq4321 virtd -e "SELECT * FROM requests LIMIT 10;"
+```
+
+![SQL запрос с тремя источниками](screenshots/Screenshot_task4.png)
+
+В БД зафиксированы запросы с трёх разных источников:
+- 🖥️ **VPS1** — `127.0.0.1` (локальный запрос)
+- 🌐 **VPS2** — внешний IP VPS2
+- 💻 **Локальная VM** — внешний IP локальной сети
+
+### Очистка VPS1 после выполнения задания
+
+```bash
+cd /opt/shvirtd-example-python && docker compose down -v && cd / && rm -rf /opt/shvirtd-example-python
+```
 
 ---
 
@@ -385,7 +345,7 @@ on linux_amd64
 | Задача 0 — Проверка окружения | ✅ |
 | Задача 1 — Dockerfile.python (multistage) | ✅ |
 | Задача 3 — compose.yaml, запуск, SQL-запрос | ✅ |
-| Задача 4 — Bash-скрипт развёртывания | ✅ |
+| Задача 4 — Bash-скрипт + проверка с удалённых источников | ✅ |
 | Задача 6 — Извлечение terraform через dive + docker save | ✅ |
 
 **Ссылка на репозиторий:** https://github.com/irbis36/shvirtd-example-python
