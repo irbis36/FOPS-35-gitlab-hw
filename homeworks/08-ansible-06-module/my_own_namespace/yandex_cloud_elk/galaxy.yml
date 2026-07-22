@@ -1,0 +1,18 @@
+#SPDX-License-Identifier: MIT-0
+namespace: my_own_namespace
+name: yandex_cloud_elk
+version: 1.0.0
+readme: README.md
+authors:
+- Vladimir Larin <larin@example.com>
+description: Collection with module for creating text files
+license:
+- GPL-2.0-or-later
+license_file: ''
+tags: []
+dependencies: {}
+repository: https://github.com/irbis36/FOPS-35-gitlab-hw
+documentation: https://github.com/irbis36/FOPS-35-gitlab-hw
+homepage: https://github.com/irbis36/FOPS-35-gitlab-hw
+issues: https://github.com/irbis36/FOPS-35-gitlab-hw/issues
+build_ignore: []
