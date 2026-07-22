@@ -104,7 +104,7 @@ sudo docker exec teamcity-agent bash -c 'git config --global https.proxy http://
 
 Зашёл в TeamCity → Agents → Unauthorized → нажал Authorize.
 
-![Авторизованный агент](screenshot/Screenshot_1.png)
+![Авторизованный агент](screenshot/Screenshot_2.png)
 
 ### 5. Fork репозитория
 
@@ -122,9 +122,9 @@ sudo docker run -d --name nexus -p 8081:8081 sonatype/nexus3
 
 Чтобы попасть в веб-интерфейс Nexus, пришлось делать SSH-туннель через MobaXterm — настроил Local Port Forwarding: `localhost:8081 → 10.128.0.18:8081` через сервер `111.88.253.12`.
 
-![Настройка SSH-туннеля в MobaXterm](screenshot/Screenshot_2.png)
+![Настройка SSH-туннеля в MobaXterm](screenshot/Screenshot_3.png)
 
-![Nexus Dashboard](screenshot/Screenshot_3.png)
+![Nexus Dashboard](screenshot/Screenshot_4.png)
 
 ---
 
@@ -138,7 +138,7 @@ sudo docker run -d --name nexus -p 8081:8081 sonatype/nexus3
 
 Запустил первую сборку, она прошла — 5 тестов пройдено.
 
-![Первая успешная сборка](screenshot/Screenshot_4.png)
+![Первая успешная сборка](screenshot/Screenshot_5.png)
 
 ### 4. Настройка условий сборки
 
@@ -146,7 +146,7 @@ sudo docker run -d --name nexus -p 8081:8081 sonatype/nexus3
 - Шаг 1: Maven `clean deploy` — выполняется только если `teamcity.build.branch` equals `master`
 - Шаг 2: Maven `clean test` — выполняется только если `teamcity.build.branch` does not equal `master`
 
-![Два шага сборки](screenshot/Screenshot_5.png)
+![Два шага сборки](screenshot/Screenshot_6.png)
 
 ### 5. Загрузка settings.xml
 
@@ -169,9 +169,9 @@ sudo docker run -d --name nexus -p 8081:8081 sonatype/nexus3
 
 Запустил сборку по master — deploy прошёл, артефакт `plaindoll-0.0.2` появился в Nexus.
 
-![Успешный deploy — Build #9](screenshot/Screenshot_6.png)
+![Успешный deploy — Build #9](screenshot/Screenshot_7.png)
 
-![Артефакт в Nexus 0.0.2](screenshot/Screenshot_7.png)
+![Артефакт в Nexus 0.0.2](screenshot/Screenshot_8.png)
 
 ### 8. Миграция build configuration в репозиторий
 
@@ -179,7 +179,7 @@ sudo docker run -d --name nexus -p 8081:8081 sonatype/nexus3
 
 Папка `.teamcity` появилась в репозитории:
 
-![Репозиторий с .teamcity](screenshot/Screenshot_8.png)
+![Репозиторий с .teamcity](screenshot/Screenshot_9.png)
 
 ### 9-12. Ветка feature/add_reply и новый код
 
@@ -204,37 +204,37 @@ public void welcomerSaysHunterReply(){
 
 Сборка по ветке `feature/add_reply` запустилась автоматически по VCS trigger — 6 тестов прошло, сработал шаг `clean test` (не master).
 
-![Сборка feature ветки — Build #12](screenshot/Screenshot_9.png)
+![Сборка feature ветки — Build #12](screenshot/Screenshot_10.png)
 
 ### 14. Merge в master
 
 Сделал Pull Request из `feature/add_reply` в `master` и замержил.
 
-![PR merged](screenshot/Screenshot_10.png)
+![PR merged](screenshot/Screenshot_11.png)
 
 ### 15. Сборка master после merge — ожидаемый fail
 
 После merge автоматически запустилась сборка по master. Она упала, потому что версия `0.0.2` уже была в Nexus и повторный deploy не прошёл — это ожидаемое поведение.
 
-![Сборка #13 — fail на deploy](screenshot/Screenshot_11.png)
+![Сборка #13 — fail на deploy](screenshot/Screenshot_12.png)
 
 ### 16-17. Настройка артефактов и повторная сборка
 
 Добавил `target/*.jar` в Artifact Paths в General Settings. Поменял версию в `pom.xml` на `0.0.3`. Запустил сборку — всё прошло, jar-файлы собраны.
 
-![Успешная сборка #15](screenshot/Screenshot_12.png)
+![Успешная сборка #15](screenshot/Screenshot_13.png)
 
-![Артефакты .jar](screenshot/Screenshot_13.png)
+![Артефакты .jar](screenshot/Screenshot_14.png)
 
 ### 18. Конфигурация в репозитории
 
 Проверил — папка `.teamcity` в репозитории содержит все настройки, включая `settings.kts` и `settings.xml` с Maven настройками.
 
-![Конфигурация в репозитории](screenshot/Screenshot_14.png)
+![Конфигурация в репозитории](screenshot/Screenshot_15.png)
 
 Nexus тоже содержит обе версии — `0.0.2` и `0.0.3`:
 
-![Nexus с версией 0.0.3](screenshot/Screenshot_15.png)
+![Nexus с версией 0.0.3](screenshot/Screenshot_16.png)
 
 ### 19. Ссылка на репозиторий
 
