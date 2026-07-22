@@ -146,5 +146,5 @@ ansible-playbook playbook.yml
 
 ## Ссылки
 
-- [Collection (исходники)](https://github.com/irbis36/FOPS-35-gitlab-hw/tree/main/homeworks/08-ansible-06-module/my_own_namespace/yandex_cloud_elk)
-- [tar.gz архив](my_own_namespace-yandex_cloud_elk-1.0.0.tar.gz)
+- [Collection (исходники)](my_own_namespace/yandex_cloud_elk)
+- [tar.gz архив](my_own_namespace/yandex_cloud_elk/my_own_namespace-yandex_cloud_elk-1.0.0.tar.gz)
