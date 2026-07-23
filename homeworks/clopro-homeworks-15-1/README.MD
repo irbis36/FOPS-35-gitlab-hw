@@ -55,6 +55,8 @@ PING ya.ru (5.255.255.242) 56(84) bytes of data.
 
 ![ping с приватной ВМ](screenshot/Screenshot_4.png)
 
+### 5. Код Terraform
+
 Конфигурация Terraform: [main.tf](main.tf)
 
 ---
