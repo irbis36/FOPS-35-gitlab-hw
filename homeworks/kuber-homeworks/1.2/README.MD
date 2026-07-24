@@ -8,7 +8,7 @@
 
 Сначала написал манифест для пода. Использовал образ echoserver как указано в задании.
 
-Манифест: [hello-world.yaml](configs/hello-world.yaml)
+Манифест: [hello-world.yaml](hello-world.yaml)
 
 Применил манифест командой `microk8s kubectl apply -f hello-world.yaml`, под создался.
 
@@ -27,8 +27,8 @@
 Тут надо было создать под netology-web и сервис netology-svc который к нему подключается. Добавил label `app: netology-web` в под, чтобы сервис мог его найти через selector.
 
 Манифесты:
-- [netology-web.yaml](configs/netology-web.yaml)
-- [netology-svc.yaml](configs/netology-svc.yaml)
+- [netology-web.yaml](netology-web.yaml)
+- [netology-svc.yaml](netology-svc.yaml)
 
 В сервисе указал `port: 80` — это порт самого сервиса, а `targetPort: 8080` — порт контейнера куда сервис будет перенаправлять трафик.
 
