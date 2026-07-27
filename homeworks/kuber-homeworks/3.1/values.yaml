@@ -1,0 +1,50 @@
+# values.yaml — параметры для деплоя приложения в разные окружения
+# можно переопределять через --set или -f values-prod.yaml
+
+database:
+  name: postgres
+  image: postgres:15
+  replicas: 3                # отказоустойчивость — 3 реплики
+  resources:
+    requests:
+      memory: "4Gi"
+      cpu: "1"
+    limits:
+      memory: "4Gi"
+      cpu: "1"
+
+cache:
+  name: redis
+  image: redis:7
+  replicas: 3                # отказоустойчивость — 3 реплики
+  resources:
+    requests:
+      memory: "4Gi"
+      cpu: "1"
+    limits:
+      memory: "4Gi"
+      cpu: "1"
+
+frontend:
+  name: frontend
+  image: nginx:1.25
+  replicas: 5
+  resources:
+    requests:
+      memory: "50Mi"
+      cpu: "200m"
+    limits:
+      memory: "50Mi"
+      cpu: "200m"
+
+backend:
+  name: backend
+  image: backend:latest
+  replicas: 10
+  resources:
+    requests:
+      memory: "600Mi"
+      cpu: "1"
+    limits:
+      memory: "600Mi"
+      cpu: "1"
