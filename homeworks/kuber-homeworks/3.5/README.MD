@@ -22,7 +22,7 @@ microk8s kubectl apply -f https://raw.githubusercontent.com/netology-code/kuber-
 
 Исходный манифест: [task-original.yaml](task-original.yaml)
 
-![Создание ресурсов](screenshot/screenshot_1.png)
+![Создание ресурсов](screenshot/Screenshot_1.png)
 
 ## 2. Выявление проблемы
 
@@ -33,7 +33,7 @@ microk8s kubectl get pods -n web
 microk8s kubectl get pods -n data
 ```
 
-![Состояние подов](screenshot/screenshot_2.png)
+![Состояние подов](screenshot/Screenshot_2.png)
 
 Поды `web-consumer` в статусе `ErrImagePull`. Посмотрел events через `describe`:
 
@@ -41,7 +41,7 @@ microk8s kubectl get pods -n data
 microk8s kubectl describe pod -n web web-consumer-6c5f7cc594-wblt4 | grep -A5 "Events"
 ```
 
-![Ошибка при pull образа](screenshot/screenshot_3.png)
+![Ошибка при pull образа](screenshot/Screenshot_3.png)
 
 Также посмотрел, что внутри деплоймента — какой образ и какая команда:
 
@@ -49,7 +49,7 @@ microk8s kubectl describe pod -n web web-consumer-6c5f7cc594-wblt4 | grep -A5 "E
 microk8s kubectl get deployment web-consumer -n web -o yaml | grep -A20 "spec:"
 ```
 
-![Спецификация деплоймента](screenshot/screenshot_4.png)
+![Спецификация деплоймента](screenshot/Screenshot_4.png)
 
 ### Обнаруженные проблемы
 
@@ -69,7 +69,7 @@ microk8s kubectl patch deployment web-consumer -n web --type='json' \
   -p='[{"op":"replace","path":"/spec/template/spec/containers/0/command","value":["sh","-c","while true; do curl auth-db.data.svc.cluster.local; sleep 5; done"]}]'
 ```
 
-![Исправление деплоймента](screenshot/screenshot_5.png)
+![Исправление деплоймента](screenshot/Screenshot_5.png)
 
 Исправленный манифест: [task-fixed.yaml](task-fixed.yaml)
 
@@ -81,7 +81,7 @@ microk8s kubectl patch deployment web-consumer -n web --type='json' \
 microk8s kubectl get pods -n web
 ```
 
-![Поды запущены](screenshot/screenshot_6.png)
+![Поды запущены](screenshot/Screenshot_6.png)
 
 Проверил логи — `web-consumer` получает ответ от nginx (это и есть `auth-db`):
 
@@ -89,7 +89,7 @@ microk8s kubectl get pods -n web
 microk8s kubectl logs -n web deployment/web-consumer --tail=10
 ```
 
-![Логи — ответ от auth-db](screenshot/screenshot_7.png)
+![Логи — ответ от auth-db](screenshot/Screenshot_7.png)
 
 Видно стандартную страницу nginx — значит `web-consumer` успешно подключается к `auth-db`. Проблема решена.
 
