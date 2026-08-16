@@ -1,0 +1,72 @@
+name: diplom terraform
+
+# Запускается только на изменения в конфигурации инфраструктуры
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'diplom/terraform/01-infra/**'
+      - '.github/workflows/diplom-terraform.yml'
+  pull_request:
+    paths:
+      - 'diplom/terraform/01-infra/**'
+  workflow_dispatch:
+
+env:
+  TF_VERSION: 1.11.4
+  WORKDIR: diplom/terraform/01-infra
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: diplom/terraform/01-infra
+
+    steps:
+      - name: Забрать код
+        uses: actions/checkout@v4
+
+      - name: Установить Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Подготовить переменные
+        run: |
+          cat > terraform.tfvars << EOF
+          cloud_id  = "${{ secrets.YC_CLOUD_ID }}"
+          folder_id = "${{ secrets.YC_FOLDER_ID }}"
+          EOF
+
+      - name: Инициализация
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.TF_S3_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_S3_SECRET_KEY }}
+        run: terraform init -input=false
+
+      - name: Проверка синтаксиса
+        run: terraform validate -no-color
+
+      - name: Построить план
+        id: plan
+        env:
+          YC_SERVICE_ACCOUNT_KEY_FILE: ${{ github.workspace }}/sa-key.json
+          AWS_ACCESS_KEY_ID: ${{ secrets.TF_S3_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_S3_SECRET_KEY }}
+        run: |
+          echo '${{ secrets.TF_SA_JSON }}' > ${{ github.workspace }}/sa-key.json
+          terraform plan -no-color -input=false | tail -40
+
+      # Применяем только при коммите в основную ветку
+      - name: Применить изменения
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        env:
+          YC_SERVICE_ACCOUNT_KEY_FILE: ${{ github.workspace }}/sa-key.json
+          AWS_ACCESS_KEY_ID: ${{ secrets.TF_S3_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_S3_SECRET_KEY }}
+        run: terraform apply -auto-approve -no-color -input=false | tail -30
+
+      - name: Убрать ключ
+        if: always()
+        run: rm -f ${{ github.workspace }}/sa-key.json

@@ -33,3 +33,8 @@ output "ci_sa_id" {
 output "puller_sa_id" {
   value = yandex_iam_service_account.puller.id
 }
+
+output "static_addresses" {
+  description = "Закреплённые внешние адреса"
+  value       = { for k, v in yandex_vpc_address.static : k => v.external_ipv4_address[0].address }
+}
