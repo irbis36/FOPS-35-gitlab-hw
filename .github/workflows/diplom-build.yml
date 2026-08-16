@@ -1,0 +1,87 @@
+name: diplom build and deploy
+
+# Собираем только при изменениях в папке приложения,
+# чтобы правки терраформа не запускали лишних сборок
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'diplom/app/**'
+      - '.github/workflows/diplom-build.yml'
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: diplom-app
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Забрать код
+        uses: actions/checkout@v4
+
+      - name: Определить версию
+        id: ver
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+            echo "is_tag=true" >> $GITHUB_OUTPUT
+          else
+            echo "version=commit-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+            echo "is_tag=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Войти в реестр
+        run: |
+          echo '${{ secrets.YC_SA_JSON_CREDENTIALS }}' | \
+            docker login --username json_key --password-stdin cr.yandex
+
+      - name: Собрать и отправить образ
+        working-directory: diplom/app
+        run: |
+          VERSION="${{ steps.ver.outputs.version }}"
+          REGISTRY="${{ secrets.YC_REGISTRY_ID }}"
+
+          docker build \
+            --build-arg VERSION="${VERSION}" \
+            -t cr.yandex/${REGISTRY}/${IMAGE_NAME}:${VERSION} \
+            -t cr.yandex/${REGISTRY}/${IMAGE_NAME}:latest \
+            .
+
+          docker push cr.yandex/${REGISTRY}/${IMAGE_NAME}:${VERSION}
+          docker push cr.yandex/${REGISTRY}/${IMAGE_NAME}:latest
+
+          echo "Опубликован образ версии ${VERSION}"
+
+    outputs:
+      version: ${{ steps.ver.outputs.version }}
+      is_tag: ${{ steps.ver.outputs.is_tag }}
+
+  # Разворачиваем в кластер только по тегу
+  deploy:
+    needs: build
+    if: needs.build.outputs.is_tag == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Забрать код
+        uses: actions/checkout@v4
+
+      - name: Настроить доступ к кластеру
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > ~/.kube/config
+          chmod 600 ~/.kube/config
+
+      - name: Обновить образ в деплойменте
+        run: |
+          VERSION="${{ needs.build.outputs.version }}"
+          REGISTRY="${{ secrets.YC_REGISTRY_ID }}"
+
+          kubectl set image deployment/diplom-app \
+            nginx=cr.yandex/${REGISTRY}/${IMAGE_NAME}:${VERSION} \
+            -n diplom
+
+          kubectl rollout status deployment/diplom-app -n diplom --timeout=3m
+          kubectl get pods -n diplom

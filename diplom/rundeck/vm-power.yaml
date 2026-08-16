@@ -1,0 +1,55 @@
+- defaultTab: output
+  description: "Запуск или остановка виртуальных машин кластера"
+  executionEnabled: true
+  group: infra
+  loglevel: INFO
+  name: vm-power
+  nodeFilterEditable: false
+  options:
+    - name: action
+      description: "Что сделать с машинами"
+      required: true
+      value: start
+      values:
+        - start
+        - stop
+      enforced: true
+  scheduleEnabled: false
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+      - description: "Управление питанием ВМ"
+        script: |
+          #!/bin/bash
+          set -u
+
+          ACTION="@option.action@"
+          echo "Действие: $ACTION"
+          echo ""
+
+          for VM in $(sudo yc compute instance list --format json | \
+                      jq -r '.[] | select(.name|startswith("diplom")) | .name'); do
+            STATUS=$(sudo yc compute instance get "$VM" --format json | jq -r '.status')
+            echo "$VM: текущий статус $STATUS"
+
+            if [ "$ACTION" = "start" ] && [ "$STATUS" = "STOPPED" ]; then
+              sudo yc compute instance start "$VM" --async >/dev/null 2>&1
+              echo "  -> запускается"
+            elif [ "$ACTION" = "stop" ] && [ "$STATUS" = "RUNNING" ]; then
+              sudo yc compute instance stop "$VM" --async >/dev/null 2>&1
+              echo "  -> останавливается"
+            else
+              echo "  -> уже в нужном состоянии, пропуск"
+            fi
+          done
+
+          echo ""
+          echo "Ждём завершения операций..."
+          sleep 30
+
+          echo ""
+          echo "=== Итоговое состояние ==="
+          sudo yc compute instance list --format json | \
+            jq -r '.[] | select(.name|startswith("diplom")) |
+                   "\(.name)\t\(.status)\t\(.network_interfaces[0].primary_v4_address.one_to_one_nat.address // "нет адреса")"'

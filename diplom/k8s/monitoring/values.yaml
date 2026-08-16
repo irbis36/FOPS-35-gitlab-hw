@@ -1,0 +1,83 @@
+# Ресурсы урезаны, потому что ноды слабые и бюджет ограничен
+
+grafana:
+  adminPassword: "diplom2026"
+
+  # Доступ к интерфейсу по 80 порту через ingress
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    hosts:
+      - grafana.89.169.180.0.nip.io
+    paths:
+      - /
+    pathType: Prefix
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+  # Дашборды по состоянию кластера ставятся вместе с чартом
+  defaultDashboardsEnabled: true
+
+  persistence:
+    enabled: false
+
+prometheus:
+  prometheusSpec:
+    retention: 3d
+
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
+
+    # Без постоянного тома, иначе нужен storage class
+    storageSpec: {}
+
+    # Чтобы prometheus видел ServiceMonitor из всех неймспейсов
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+
+alertmanager:
+  alertmanagerSpec:
+    resources:
+      requests:
+        cpu: 20m
+        memory: 64Mi
+      limits:
+        cpu: 100m
+        memory: 128Mi
+
+prometheusOperator:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+nodeExporter:
+  enabled: true
+
+kubeStateMetrics:
+  enabled: true
+
+# Компоненты управляющего узла у нас не вынесены наружу,
+# поэтому часть проверок отключаем, чтобы не сыпались ложные алерты
+kubeControllerManager:
+  enabled: true
+kubeScheduler:
+  enabled: true
+kubeProxy:
+  enabled: true
+kubeEtcd:
+  enabled: false
