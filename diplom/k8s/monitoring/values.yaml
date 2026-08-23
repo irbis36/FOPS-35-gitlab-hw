@@ -3,12 +3,21 @@
 grafana:
   adminPassword: "diplom2026"
 
+  # За обратным прокси Grafana должна знать свой внешний адрес,
+  # иначе после входа ломаются редиректы
+  grafana.ini:
+    server:
+      root_url: https://grafana.irbis36.vip
+    security:
+      cookie_secure: true
+      cookie_samesite: lax
+
   # Доступ к интерфейсу по 80 порту через ingress
   ingress:
     enabled: true
     ingressClassName: nginx
     hosts:
-      - grafana.89.169.180.0.nip.io
+      - grafana.irbis36.vip
     paths:
       - /
     pathType: Prefix

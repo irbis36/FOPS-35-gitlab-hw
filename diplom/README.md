@@ -407,12 +407,22 @@ API:        ok
 
 | Ресурс | Адрес |
 |---|---|
-| Тестовое приложение | http://89.169.180.0/ |
-| Grafana | http://grafana.89.169.180.0.nip.io/ |
+| Тестовое приложение | https://diplom.irbis36.vip/ |
+| Grafana | https://grafana.irbis36.vip/ |
+| Prometheus | https://prometheus.irbis36.vip/ |
+| Alertmanager | https://alertmanager.irbis36.vip/ |
 | Репозиторий | https://github.com/irbis36/FOPS-35-gitlab-hw/tree/main/diplom |
 | Реестр образов | `cr.yandex/crp1oavjn6oftmsg31lk/diplom-app` |
 
 Логин и пароль от Grafana переданы отдельно.
+
+Сервисы также доступны напрямую по адресу воркера `http://89.169.180.0/` —
+это исходный вариант без домена, требование задания про 80 порт он закрывает.
+
+Разведение по доменам сделано на ingress-контроллере: все имена смотрят на один
+адрес, а контроллер разбирает запросы по заголовку `Host`. Сертификаты и
+ограничение доступа к Prometheus с Alertmanager настроены на обратном прокси,
+у самих этих сервисов авторизации нет.
 
 ---
 
