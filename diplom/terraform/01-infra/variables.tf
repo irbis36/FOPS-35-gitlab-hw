@@ -19,7 +19,7 @@ variable "cidrs" {
 }
 
 variable "ssh_public_key_path" {
-  description = "Путь до публичного ключа для доступа на ВМ"
+  description = "Публичный ключ лежит рядом с конфигурацией, чтобы она работала и на раннере CI"
   type        = string
-  default     = "/home/larin/diplom/.ssh/diplom.pub"
+  default     = "ssh-key.pub"
 }

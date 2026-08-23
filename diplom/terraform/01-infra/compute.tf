@@ -1,5 +1,10 @@
-data "yandex_compute_image" "ubuntu" {
-  family = "ubuntu-2204-lts"
+# Образ зафиксирован по идентификатору, а не по семейству.
+# Иначе выход нового образа Ubuntu заставляет Terraform пересоздавать
+# все машины, что убивает уже развёрнутый кластер.
+variable "image_id" {
+  description = "Идентификатор образа для загрузочного диска"
+  type        = string
+  default     = "fd8548a3jsnsqvdksljd"
 }
 
 locals {
@@ -51,7 +56,7 @@ resource "yandex_compute_instance" "k8s" {
 
   boot_disk {
     initialize_params {
-      image_id = data.yandex_compute_image.ubuntu.id
+      image_id = var.image_id
       type     = each.value.disk_type
       size     = each.value.disk_size
     }
