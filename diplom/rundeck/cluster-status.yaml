@@ -1,0 +1,33 @@
+- defaultTab: output
+  description: "Проверка состояния кластера и приложений"
+  executionEnabled: true
+  group: k8s
+  loglevel: INFO
+  name: cluster-status
+  sequence:
+    keepgoing: true
+    strategy: sequential
+    commands:
+      - description: "Состояние кластера"
+        script: |
+          #!/bin/bash
+
+          export KUBECONFIG=/root/.kube/config
+
+          echo "=== Ноды ==="
+          sudo -E kubectl get nodes -o wide 2>&1
+
+          echo ""
+          echo "=== Приложение ==="
+          sudo -E kubectl get pods,svc,ingress -n diplom 2>&1
+
+          echo ""
+          echo "=== Мониторинг ==="
+          sudo -E kubectl get pods -n monitoring 2>&1
+
+          echo ""
+          echo "=== Проверка доступности ==="
+          echo -n "Приложение: "
+          curl -s -m 10 -o /dev/null -w "HTTP %{http_code}\n" http://89.169.180.0/ || echo "недоступно"
+          echo -n "Grafana:    "
+          curl -s -m 10 -o /dev/null -w "HTTP %{http_code}\n" http://grafana.89.169.180.0.nip.io/login || echo "недоступно"

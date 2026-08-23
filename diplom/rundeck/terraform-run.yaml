@@ -1,0 +1,58 @@
+- defaultTab: output
+  description: "Запуск terraform для основной инфраструктуры"
+  executionEnabled: true
+  group: infra
+  loglevel: INFO
+  name: terraform-run
+  options:
+    - name: command
+      description: "Какую операцию выполнить"
+      required: true
+      value: plan
+      values:
+        - plan
+        - apply
+        - destroy
+      enforced: true
+    - name: confirm
+      description: "Для apply и destroy введите YES"
+      required: false
+  sequence:
+    keepgoing: false
+    strategy: sequential
+    commands:
+      - description: "Terraform"
+        script: |
+          #!/bin/bash
+          set -u
+
+          CMD="@option.command@"
+          CONFIRM="@option.confirm@"
+
+          if [ "$CMD" != "plan" ] && [ "$CONFIRM" != "YES" ]; then
+            echo "Для операции $CMD требуется подтверждение: введите YES"
+            exit 1
+          fi
+
+          export YC_TOKEN=$(sudo yc iam create-token)
+          export AWS_ACCESS_KEY_ID=$(sudo jq -r '.access_key.value' /home/larin/diplom/backend-keys.json)
+          export AWS_SECRET_ACCESS_KEY=$(sudo jq -r '.secret_key.value' /home/larin/diplom/backend-keys.json)
+
+          cd /home/larin/diplom/terraform/01-infra
+
+          echo "=== terraform init ==="
+          sudo -E terraform init -input=false -no-color 2>&1 | tail -3
+
+          echo ""
+          echo "=== terraform $CMD ==="
+          case "$CMD" in
+            plan)
+              sudo -E terraform plan -no-color -input=false 2>&1 | tail -40
+              ;;
+            apply)
+              sudo -E terraform apply -auto-approve -no-color -input=false 2>&1 | tail -30
+              ;;
+            destroy)
+              sudo -E terraform destroy -auto-approve -no-color -input=false 2>&1 | tail -30
+              ;;
+          esac
