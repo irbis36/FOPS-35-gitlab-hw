@@ -212,13 +212,11 @@ Alertmanager, node_exporter и kube-state-metrics.
 
 * [k8s/monitoring/values.yaml](k8s/monitoring/values.yaml) — переопределения ресурсов
 * [k8s/monitoring/install.sh](k8s/monitoring/install.sh) — скрипт установки
+* [k8s/monitoring/ingress-extra.yaml](k8s/monitoring/ingress-extra.yaml) — доступ к Prometheus и Alertmanager
 
 Ресурсы урезаны под слабые ноды, хранение метрик — 3 дня, постоянные тома
 не используются, потому что storage class в кластере не настраивался.
 Проверки etcd отключены, чтобы не сыпались ложные срабатывания.
-
-Grafana доступна по 80 порту через ingress. Своего домена нет, поэтому
-использован сервис `nip.io`, который резолвит адрес прямо из имени хоста.
 
 Страница входа:
 
@@ -246,9 +244,6 @@ Grafana доступна по 80 порту через ingress. Своего д�
 В деплойменте прописан `imagePullSecrets` — реестр приватный, без секрета
 образ не скачается. Секрет создаётся из ключа сервисного аккаунта с правами
 только на чтение.
-
-Два ingress уживаются на одном контроллере: Grafana отвечает по имени хоста,
-приложение — по IP без указания хоста.
 
 Вывод: [logs/09-app-deploy.md](logs/09-app-deploy.md)
 
@@ -434,8 +429,18 @@ API:        ok
 по таймауту. Группа безопасности разрешала 22 порт, cloud-init отрабатывал.
 
 Проверка изнутри сети через воркер показала, что sshd на мастере работает
-и порт слушается. Значит, проблема была во внешнем адресе. Помогло
-пересоздание машины через `terraform taint` — с новым адресом всё заработало.
+и порт слушается:
+
+```
+$ ssh ubuntu@89.169.180.0 "timeout 5 bash -c 'cat < /dev/null > /dev/tcp/10.10.1.12/22' \
+    && echo 'мастер:22 изнутри ОТКРЫТ'"
+
+на воркере: diplom-worker-1
+мастер:22 изнутри ОТКРЫТ
+```
+
+Значит, проблема была во внешнем адресе. Помогло пересоздание машины через
+`terraform taint` — с новым адресом всё заработало.
 
 Заодно убрал таблицу маршрутов с NAT-шлюзом: у всех машин есть публичные
 адреса, отдельный шлюз им не нужен, а его наличие только усложняло схему.
@@ -443,10 +448,21 @@ API:        ok
 ### Terraform пытался пересоздать весь кластер
 
 Через неделю после установки `terraform plan` внезапно показал
-`3 to add, 3 to destroy`. Причина — в конфигурации образ брался через
-`data "yandex_compute_image"` по семейству `ubuntu-2204-lts`, а Яндекс
-выпустил новую версию образа. Смена `image_id` требует пересоздания машины,
-и Terraform честно собирался снести живой кластер.
+`3 to add, 3 to destroy`:
+
+```
+$ terraform plan -no-color | grep -B3 "forces replacement"
+
+          ~ initialize_params {
+              ~ block_size  = 4096 -> (known after apply)
+              + description = (known after apply)
+              ~ image_id    = "fd8548a3jsnsqvdksljd" -> "fd8qmr57ndfedjv8lfgk" # forces replacement
+```
+
+Причина — в конфигурации образ брался через `data "yandex_compute_image"`
+по семейству `ubuntu-2204-lts`, а Яндекс выпустил новую версию образа.
+Смена `image_id` требует пересоздания машины, и Terraform честно собирался
+снести живой кластер.
 
 Решение — зафиксировать образ по идентификатору:
 
@@ -470,21 +486,164 @@ variable "image_id" {
 
 1. В шагах стоял `| tail -30`, и код возврата брался от `tail`, а не от
    Terraform. Ошибки не всплывали наверх.
-2. Путь к публичному ключу был абсолютным — `/home/larin/diplom/.ssh/diplom.pub`.
-   На своей машине это работало, на раннере GitHub такого файла нет.
+2. Путь к публичному ключу был абсолютным:
+
+```
+Error: Invalid function argument
+
+  on compute.tf line 71, in resource "yandex_compute_instance" "k8s":
+  71:     ssh-keys  = "ubuntu:${file(var.ssh_public_key_path)}"
+    │ var.ssh_public_key_path is "/home/larin/diplom/.ssh/diplom.pub"
+
+Invalid value for "path" parameter: no file exists at
+"/home/larin/diplom/.ssh/diplom.pub"
+```
+
+На своей машине это работало, на раннере GitHub такого файла нет.
 
 Исправил обе: убрал конвейеры из шагов и положил публичный ключ рядом
 с конфигурацией, обращаясь к нему по относительному пути. Ключ публичный,
 хранить его в репозитории безопасно.
 
+### Grafana уходила в перезапуск после смены домена
+
+После перевода на собственный домен интерфейс начал отдавать 502, а ingress —
+503:
+
+```
+W0823 20:24:07.465688  7 controller.go:1219] Service "monitoring/monitoring-grafana"
+  does not have any active Endpoint.
+```
+
+При этом в логах самой Grafana было видно, что она стартует нормально
+и даже отвечает на запросы. Причина оказалась в лимите памяти:
+
+```
+$ kubectl get pod -n monitoring -l app.kubernetes.io/name=grafana \
+    -o jsonpath='{.items[0].status.containerStatuses[0].lastState}'
+
+{
+    "terminated": {
+        "exitCode": 137,
+        "reason": "OOMKilled",
+        "startedAt": "2026-08-23T20:24:07Z",
+        "finishedAt": "2026-08-23T20:25:06Z"
+    }
+}
+```
+
+Контейнер завершался с кодом 137 и причиной `OOMKilled`. Grafana версии 13
+строит поисковый индекс в памяти — в логах это видно как
+`Building index using memory` — и выставленных 256 Mi ей не хватало.
+
+Правка в [k8s/monitoring/values.yaml](k8s/monitoring/values.yaml):
+
+```yaml
+grafana:
+  # Grafana 13 строит поисковый индекс в памяти, в 256Mi не помещается
+  # и контейнер уходит в OOMKilled
+  resources:
+    requests:
+      cpu: 50m
+      memory: 256Mi
+    limits:
+      cpu: 300m
+      memory: 640Mi
+```
+
+Побочный эффект: пока Grafana падала, сайдкар успел разложить файлы
+дашбордов, но не смог достучаться до неё с командой перечитать их:
+
+```
+{"level": "INFO", "msg": "Writing /tmp/dashboards/scheduler.json (ascii)"}
+{"level": "INFO", "msg": "Writing /tmp/dashboards/workload-total.json (ascii)"}
+{"level": "WARNING", "msg": "Retrying (Retry(total=4, connect=9, read=5)) after
+  connection broken by 'NewConnectionError(HTTPConnection(host=localhost,
+  port=3000): Failed to establish a new connection: [Errno 111] Connection
+  refused)': /api/admin/provisioning/dashboards/reload"}
+{"level": "WARNING", "msg": "Retrying (Retry(total=3, ...))"}
+{"level": "WARNING", "msg": "Retrying (Retry(total=2, ...))"}
+{"level": "WARNING", "msg": "Retrying (Retry(total=1, ...))"}
+{"level": "WARNING", "msg": "Retrying (Retry(total=0, ...))"}
+{"level": "ERROR", "msg": "Unexpected error during request to
+  http://localhost:3000/api/admin/provisioning/dashboards/reload:
+  Max retries exceeded"}
+```
+
+Файлы лежали на диске, но Grafana о них не знала — со стороны это выглядело
+как пустой список дашбордов. Решилось перезапуском пода: при старте Grafana
+читает папку с провижинингом сама.
+
+```
+$ kubectl rollout restart deployment monitoring-grafana -n monitoring
+$ kubectl get pods -n monitoring -l app.kubernetes.io/name=grafana
+
+NAME                                  READY   STATUS    RESTARTS   AGE
+monitoring-grafana-7d9c4f8b6c-x2mnp   3/3     Running   0          45s
+```
+
+### Приложение открывалось на всех доменах сразу
+
+После настройки обратного прокси все четыре домена показывали одну и ту же
+страницу с приложением. Причина в том, что ingress приложения был создан
+без указания хоста, то есть перехватывал любой заголовок `Host`.
+
+Исправлено добавлением явного правила с доменом. Правило без хоста оставлено
+вторым, чтобы приложение по-прежнему открывалось и по адресу ноды:
+
+```yaml
+spec:
+  ingressClassName: nginx
+  rules:
+    # Основной домен, за ним обратный прокси с сертификатом
+    - host: diplom.irbis36.vip
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: diplom-app
+                port:
+                  number: 80
+    # Правило без хоста оставлено, чтобы приложение открывалось и по адресу ноды
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: diplom-app
+                port:
+                  number: 80
+```
+
+Проверка развода по хостам:
+
+```
+$ for h in diplom grafana prometheus alertmanager; do
+    curl -s -o /dev/null -w "%{http_code}\n" -H "Host: $h.irbis36.vip" http://89.169.180.0/
+  done
+
+diplom.irbis36.vip       -> 200
+grafana.irbis36.vip      -> 302
+prometheus.irbis36.vip   -> 302
+alertmanager.irbis36.vip -> 200
+```
+
 ### Квота на статические адреса
 
-При попытке закрепить адреса за всеми тремя машинами третья упёрлась в
-`Quota limit vpc.externalStaticAddresses.count exceeded`. Часть квоты была
-занята другими ресурсами каталога.
+При попытке закрепить адреса за всеми тремя машинами третья упёрлась
+в ограничение:
 
-Решил не расширять квоту, а закрепить адреса только там, где это критично —
-у мастера и воркера с ingress. Второй воркер работает на эфемерном адресе.
+```
+ERROR: rpc error: code = ResourceExhausted
+desc = Quota limit vpc.externalStaticAddresses.count exceeded
+```
+
+Часть квоты была занята другими ресурсами каталога. Решил не расширять
+квоту, а закрепить адреса только там, где это критично — у мастера и воркера
+с ingress. Второй воркер работает на эфемерном адресе.
 
 ### Место на диске
 
