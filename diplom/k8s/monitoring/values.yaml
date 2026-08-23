@@ -22,13 +22,15 @@ grafana:
       - /
     pathType: Prefix
 
+  # Grafana 13 строит поисковый индекс в памяти, в 256Mi не помещается
+  # и контейнер уходит в OOMKilled
   resources:
     requests:
       cpu: 50m
-      memory: 128Mi
-    limits:
-      cpu: 200m
       memory: 256Mi
+    limits:
+      cpu: 300m
+      memory: 640Mi
 
   # Дашборды по состоянию кластера ставятся вместе с чартом
   defaultDashboardsEnabled: true
