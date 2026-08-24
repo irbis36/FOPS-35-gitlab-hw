@@ -13,21 +13,43 @@
           #!/bin/bash
 
           export KUBECONFIG=/root/.kube/config
+          # Короткий таймаут, чтобы на выключенном стенде не ждать по полминуты
+          KC="sudo -E kubectl --request-timeout=10s"
 
+          echo "=== Виртуальные машины ==="
+          export YC_TOKEN=$(sudo yc iam create-token)
+          sudo yc compute instance list --format json | \
+            jq -r '.[] | select(.name|startswith("diplom")) |
+                   "\(.name)\t\(.status)\t\(.network_interfaces[0].primary_v4_address.one_to_one_nat.address // "нет адреса")"'
+
+          RUNNING=$(sudo yc compute instance list --format json | \
+            jq -r '[.[] | select(.name|startswith("diplom")) | select(.status=="RUNNING")] | length')
+
+          if [ "$RUNNING" -lt 3 ]; then
+            echo ""
+            echo "Запущено машин: $RUNNING из 3."
+            echo "Кластер выключен или поднимается — проверка Kubernetes пропущена."
+            echo "Чтобы запустить стенд, выполните задание infra/vm-power с action=start"
+            echo "и подождите 2-3 минуты."
+            exit 0
+          fi
+
+          echo ""
           echo "=== Ноды ==="
-          sudo -E kubectl get nodes -o wide 2>&1
+          $KC get nodes -o wide 2>&1
 
           echo ""
           echo "=== Приложение ==="
-          sudo -E kubectl get pods,svc,ingress -n diplom 2>&1
+          $KC get pods,svc,ingress -n diplom 2>&1
 
           echo ""
           echo "=== Мониторинг ==="
-          sudo -E kubectl get pods -n monitoring 2>&1
+          $KC get pods -n monitoring 2>&1
 
           echo ""
-          echo "=== Проверка доступности ==="
+          echo "=== Доступность сервисов ==="
           echo -n "Приложение: "
           curl -s -m 10 -o /dev/null -w "HTTP %{http_code}\n" http://89.169.180.0/ || echo "недоступно"
           echo -n "Grafana:    "
-          curl -s -m 10 -o /dev/null -w "HTTP %{http_code}\n" http://grafana.89.169.180.0.nip.io/login || echo "недоступно"
+          curl -s -m 10 -o /dev/null -w "HTTP %{http_code}\n" \
+            -H "Host: grafana.irbis36.vip" http://89.169.180.0/login || echo "недоступно"
